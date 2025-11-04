@@ -3,16 +3,16 @@
 import { useEffect, useMemo, useState } from "react";
 import ProductGrid from "@/components/product-grid";
 import FilterBar from "@/components/filter-bar";
-import { fetchApplePhones, type StorefrontProduct } from "@/lib/catalog";
+import { fetchApplePhones } from "@/lib/catalog";
 
 export default function ApplePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 3000]);
+  const [priceRange, setPriceRange] = useState([0, 3000]);
   const [sortBy, setSortBy] = useState("featured");
 
-  const [items, setItems] = useState<StorefrontProduct[]>([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err,   setErr] = useState<string | null>(null);
+  const [err, setErr] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -21,8 +21,8 @@ export default function ApplePage() {
         setLoading(true);
         const data = await fetchApplePhones();
         if (mounted) setItems(data);
-      } catch (e: any) {
-        setErr(e?.message ?? "Failed to load products");
+      } catch (e) {
+        setErr(e?.message || "Failed to load products");
       } finally {
         if (mounted) setLoading(false);
       }
