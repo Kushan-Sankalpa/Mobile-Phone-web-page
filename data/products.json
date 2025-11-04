@@ -1,0 +1,320 @@
+{
+  "apple": [
+    {
+      "id": "iphone-15-pro",
+      "brand": "apple",
+      "name": "iPhone 15 Pro",
+      "model": "Pro Max",
+      "price": 1199,
+      "specs": ["6.7\" Super Retina XDR display", "A17 Pro chip", "48MP main camera", "Titanium design"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "iphone-15",
+      "brand": "apple",
+      "name": "iPhone 15",
+      "model": "Standard",
+      "price": 799,
+      "specs": ["6.1\" Liquid Retina display", "A16 Bionic chip", "48MP main camera", "Dynamic Island"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "iphone-14",
+      "brand": "apple",
+      "name": "iPhone 14",
+      "model": "Standard",
+      "price": 599,
+      "specs": ["6.1\" Liquid Retina display", "A15 Bionic chip", "12MP dual camera", "Night mode"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "iphone-se",
+      "brand": "apple",
+      "name": "iPhone SE",
+      "model": "3rd Gen",
+      "price": 429,
+      "specs": ["4.7\" Retina display", "A15 Bionic chip", "12MP camera", "Touch ID"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "ipad-pro",
+      "brand": "apple",
+      "name": "iPad Pro",
+      "model": "12.9-inch",
+      "price": 1099,
+      "specs": ["12.9\" Liquid Retina XDR", "M2 chip", "ProMotion 120Hz", "Face ID"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "airpods-pro",
+      "brand": "apple",
+      "name": "AirPods Pro",
+      "model": "2nd Gen",
+      "price": 249,
+      "specs": ["Active Noise Cancellation", "Adaptive Audio", "Personalized Volume", "USB-C charging"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "apple-watch",
+      "brand": "apple",
+      "name": "Apple Watch",
+      "model": "Series 9",
+      "price": 399,
+      "specs": ["Always-On Retina display", "S9 chip", "ECG app", "Blood oxygen sensor"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "macbook-pro",
+      "brand": "apple",
+      "name": "MacBook Pro",
+      "model": "16-inch",
+      "price": 2499,
+      "specs": ["M3 Max chip", "16-inch Liquid Retina XDR", "36GB unified memory", "1TB SSD"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    }
+  ],
+  "android": [
+    {
+      "id": "pixel-8-pro",
+      "brand": "android",
+      "name": "Google Pixel 8 Pro",
+      "model": "Pro",
+      "price": 999,
+      "specs": ["6.7\" QHD+ OLED", "Tensor G3 chip", "50MP main camera", "Magic Eraser"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "pixel-8",
+      "brand": "android",
+      "name": "Google Pixel 8",
+      "model": "Standard",
+      "price": 799,
+      "specs": ["6.2\" FHD+ OLED", "Tensor G3 chip", "50MP main camera", "Night Sight"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "samsung-s24",
+      "brand": "android",
+      "name": "Samsung Galaxy S24",
+      "model": "Ultra",
+      "price": 1299,
+      "specs": ["6.8\" Dynamic AMOLED 2X", "Snapdragon 8 Gen 3", "200MP main camera", "S Pen included"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "samsung-s24-standard",
+      "brand": "android",
+      "name": "Samsung Galaxy S24",
+      "model": "Standard",
+      "price": 799,
+      "specs": ["6.2\" Dynamic AMOLED 2X", "Snapdragon 8 Gen 3", "50MP main camera", "Vision Booster"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "oneplus-12",
+      "brand": "android",
+      "name": "OnePlus 12",
+      "model": "Pro",
+      "price": 899,
+      "specs": ["6.7\" AMOLED", "Snapdragon 8 Gen 3", "50MP main camera", "Hasselblad tuning"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "motorola-edge",
+      "brand": "android",
+      "name": "Motorola Edge 50",
+      "model": "Pro",
+      "price": 699,
+      "specs": ["6.7\" AMOLED", "Snapdragon 8 Gen 3", "50MP main camera", "IP68 rated"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "nothing-phone",
+      "brand": "android",
+      "name": "Nothing Phone 2",
+      "model": "Standard",
+      "price": 599,
+      "specs": ["6.7\" OLED", "Snapdragon 8+ Gen 1", "50MP main camera", "Glyph interface"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "xiaomi-14",
+      "brand": "android",
+      "name": "Xiaomi 14",
+      "model": "Ultra",
+      "price": 1099,
+      "specs": ["6.73\" AMOLED", "Snapdragon 8 Gen 3", "50MP main camera", "Leica optics"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    }
+  ],
+  "jbl": [
+    {
+      "id": "jbl-tour-pro",
+      "brand": "jbl",
+      "name": "JBL Tour Pro 2",
+      "model": "Earbuds",
+      "price": 299,
+      "specs": ["Active Noise Cancellation", "Adaptive Audio", "32-hour battery", "Spatial audio"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-flip-6",
+      "brand": "jbl",
+      "name": "JBL Flip 6",
+      "model": "Speaker",
+      "price": 129,
+      "specs": ["Waterproof design", "12-hour battery", "360° sound", "Compact size"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-charge-5",
+      "brand": "jbl",
+      "name": "JBL Charge 5",
+      "model": "Speaker",
+      "price": 179,
+      "specs": ["Waterproof design", "20-hour battery", "Power bank feature", "Deep bass"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-live-pro",
+      "brand": "jbl",
+      "name": "JBL Live Pro 2",
+      "model": "Earbuds",
+      "price": 199,
+      "specs": ["Adaptive Noise Cancellation", "8-hour battery", "Ambient aware", "Comfort fit"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-partybox",
+      "brand": "jbl",
+      "name": "JBL PartyBox 110",
+      "model": "Speaker",
+      "price": 399,
+      "specs": ["160W power", "Dynamic light show", "Wireless connectivity", "Karaoke ready"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-tune-750",
+      "brand": "jbl",
+      "name": "JBL Tune 750",
+      "model": "Headphones",
+      "price": 149,
+      "specs": ["Active Noise Cancellation", "35-hour battery", "Lightweight design", "Foldable"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-authentics",
+      "brand": "jbl",
+      "name": "JBL Authentics 300",
+      "model": "Speaker",
+      "price": 249,
+      "specs": ["WiFi & Bluetooth", "Voice control ready", "Retro design", "Premium sound"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    },
+    {
+      "id": "jbl-go-4",
+      "brand": "jbl",
+      "name": "JBL Go 4",
+      "model": "Speaker",
+      "price": 79,
+      "specs": ["Ultra-portable", "7-hour battery", "Waterproof", "Bluetooth 5.3"],
+      "images": [
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400",
+        "/placeholder.svg?height=400&width=400"
+      ]
+    }
+  ]
+}
