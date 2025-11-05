@@ -1,0 +1,5 @@
+/* only background; do NOT set color here */
+.pageMain {
+  background: #fff;
+  min-height: 100vh;
+}
