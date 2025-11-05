@@ -1,4 +1,3 @@
-// components/home/video-slider.jsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -16,8 +15,11 @@ const slides = [
     id: 2,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AppleShort-ioQTH3tg3LOr0klY8l1SNLfeuLffUg.mp4",
-    title: "Apple iPhone",
+    title: "Apple iPhone (Short)",
   },
+  // Local files served from /public/media
+  { id: 3, video: "/media/samsung.mp4",   title: "Samsung Galaxy" },
+  { id: 4, video: "/media/applelong.mp4", title: "Apple iPhone (Long)" },
 ];
 
 export default function VideoSlider() {
@@ -26,6 +28,7 @@ export default function VideoSlider() {
   const [progress, setProgress] = useState(0);
   const videoRef = useRef(null);
 
+  // Attach listeners to CURRENT slide's <video>
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -34,43 +37,37 @@ export default function VideoSlider() {
       const percent = video.duration ? (video.currentTime / video.duration) * 100 : 0;
       setProgress(percent);
     };
+    const handleEnded = () => nextSlide();
+    const handlePlay  = () => setShowPlayButton(false);
 
-    const handleEnded = () => {
-      nextSlide();
-    };
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("play", handlePlay);
 
-    const handlePlay = () => {
-      setShowPlayButton(false);
+    // Try autoplay for the active slide
+    const tryAutoplay = async () => {
+      try {
+        await video.play();
+        setShowPlayButton(false);
+      } catch {
+        setShowPlayButton(true);
+      }
     };
+    const t = setTimeout(tryAutoplay, 0);
 
     const handleKeyDown = (e) => {
       if (e.key === "ArrowLeft") prevSlide();
       if (e.key === "ArrowRight") nextSlide();
     };
-
-    video.addEventListener("timeupdate", handleTimeUpdate);
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("play", handlePlay);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      clearTimeout(t);
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("ended", handleEnded);
       video.removeEventListener("play", handlePlay);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        setShowPlayButton(true);
-      });
-    }
   }, [currentSlide]);
 
   const nextSlide = () => {
@@ -89,48 +86,67 @@ export default function VideoSlider() {
   };
 
   const handlePlayClick = () => {
-    videoRef.current?.play();
+    videoRef.current?.play().catch(() => setShowPlayButton(true));
   };
+
+  const nextIndex = (currentSlide + 1) % slides.length;
 
   return (
     <div className={styles.slider} role="region" aria-label="Video slider">
-      {/* Video Container */}
+      {/* Slides */}
       <div className={styles.slidesWrap}>
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            className={`${styles.slide} ${index === currentSlide ? styles.slideVisible : ""}`}
-            role="tabpanel"
-            aria-label={`Slide ${index + 1}: ${slide.title}`}
-          >
-            <video
-              ref={index === currentSlide ? videoRef : null}
-              src={slide.video}
-              className={`${styles.video} no-native-controls`}
-              muted
-              playsInline
-              controls={false}
-              controlsList="nodownload nofullscreen noplaybackrate"
-              disablePictureInPicture
-            />
+        {slides.map((slide, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <div
+              key={slide.id}
+              className={`${styles.slide} ${isActive ? styles.slideVisible : ""}`}
+              role="tabpanel"
+              aria-label={`Slide ${index + 1}: ${slide.title}`}
+            >
+              <video
+                ref={isActive ? videoRef : null}
+                // Lazy src: only load the active slide
+                src={isActive ? slide.video : undefined}
+                preload={isActive ? "auto" : "none"}
+                className={`${styles.video} no-native-controls`}
+                muted
+                playsInline
+                controls={false}
+                controlsList="nodownload nofullscreen noplaybackrate"
+                disablePictureInPicture
+              />
 
-            {/* Play Button Overlay */}
-            {showPlayButton && index === currentSlide && (
-              <div className={styles.cover}>
-                <button
-                  onClick={handlePlayClick}
-                  className={styles.playButton}
-                  aria-label="Play video"
-                >
-                  <Play size={48} className={styles.playIcon} />
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+              {/* Play overlay if autoplay is blocked */}
+              {showPlayButton && isActive && (
+                <div className={styles.cover}>
+                  <button
+                    onClick={handlePlayClick}
+                    className={styles.playButton}
+                    aria-label="Play video"
+                  >
+                    <Play size={48} className={styles.playIcon} />
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Progress Bar (no inline styles) */}
+      {/* Hidden preloader for the next slide (optional) */}
+      {slides.length > 1 && (
+        <video
+          className={styles.srOnly}
+          src={slides[nextIndex].video}
+          preload="metadata"
+          muted
+          playsInline
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Progress */}
       <progress
         className={styles.progress}
         role="progressbar"
@@ -141,7 +157,7 @@ export default function VideoSlider() {
         value={progress}
       />
 
-      {/* Navigation Arrows */}
+      {/* Arrows */}
       <button
         onClick={prevSlide}
         className={`${styles.navButton} ${styles.left}`}
@@ -149,7 +165,6 @@ export default function VideoSlider() {
       >
         <ChevronLeft size={24} className={styles.icon} />
       </button>
-
       <button
         onClick={nextSlide}
         className={`${styles.navButton} ${styles.right}`}
@@ -158,7 +173,7 @@ export default function VideoSlider() {
         <ChevronRight size={24} className={styles.icon} />
       </button>
 
-      {/* Dot Indicators */}
+      {/* Dots */}
       <div className={styles.dots} role="tablist">
         {slides.map((_, index) => (
           <button
@@ -172,7 +187,7 @@ export default function VideoSlider() {
         ))}
       </div>
 
-      {/* Slide Title */}
+      {/* Title */}
       <div className={styles.titleWrap}>
         <h2 className={styles.title}>{slides[currentSlide].title}</h2>
       </div>

@@ -4,17 +4,15 @@
   height: 100vh;
   background: #000;
   overflow: hidden;
-  padding-top: 64px; /* same as your previous pt-16 for fixed navbar space */
+  padding-top: 4rem; /* accounts for fixed navbar */
 }
 
-/* Slides wrapper */
 .slidesWrap {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* Each slide layer */
 .slide {
   position: absolute;
   inset: 0;
@@ -26,37 +24,44 @@
   opacity: 1;
 }
 
-/* Video element */
 .video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Cover overlay (blocks native big play badge & shows our custom play) */
+/* Hide native big play on Safari/iOS/Chrome where possible */
+:global(.no-native-controls::-webkit-media-controls-start-playback-button) {
+  display: none !important;
+  -webkit-appearance: none;
+}
+:global(video::-webkit-media-controls-play-button) {
+  display: none !important;
+}
+:global(video::-webkit-media-controls) {
+  display: none !important;
+}
+
 .cover {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, .4);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Custom play button */
 .playButton {
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, .2);
   border: none;
-  padding: 16px;
+  padding: 1rem;
   border-radius: 9999px;
+  backdrop-filter: blur(6px);
   cursor: pointer;
-  outline: none;
-  transition: background 0.2s ease;
+  transition: background .2s ease;
 }
-
 .playButton:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, .3);
 }
 
 .playIcon {
@@ -64,107 +69,99 @@
   fill: #fff;
 }
 
-/* Progress bar (native <progress>) */
 .progress {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   height: 4px;
-  z-index: 10;
+  width: 100%;
   appearance: none;
-  -webkit-appearance: none;
+  border: none;
+  background: rgba(255,255,255,.2);
 }
-
 .progress::-webkit-progress-bar {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,.2);
 }
-
 .progress::-webkit-progress-value {
   background: #fff;
-  transition: width 0.1s linear;
+  transition: width .1s linear;
 }
-
 .progress::-moz-progress-bar {
   background: #fff;
 }
 
-/* Navigation buttons (arrows) */
 .navButton {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(255,255,255,0.2);
+  z-index: 20;
+  background: rgba(255,255,255,.2);
   border: none;
-  padding: 12px;
+  padding: .75rem;
   border-radius: 9999px;
+  backdrop-filter: blur(6px);
   cursor: pointer;
-  outline: none;
-  transition: background 0.2s ease;
+  transition: background .2s ease;
 }
-
 .navButton:hover {
-  background: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,.4);
+}
+.left { left: 1rem; }
+.right { right: 1rem; }
+
+.icon {
+  color: #fff;
 }
 
-.left { left: 16px; }
-.right { right: 16px; }
-
-.icon { color: #fff; }
-
-/* Dots */
 .dots {
   position: absolute;
-  bottom: 32px;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 20;
   display: flex;
-  gap: 8px;
+  gap: .5rem;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: .5rem;
+  height: .5rem;
   border-radius: 9999px;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,.5);
   border: none;
   cursor: pointer;
-  outline: none;
-  transition: background 0.2s ease, width 0.2s ease;
+  transition: all .2s ease;
 }
-
-.dot:hover { background: rgba(255,255,255,0.75); }
-
+.dot:hover {
+  background: rgba(255,255,255,.75);
+}
 .dotActive {
-  width: 32px;
   background: #fff;
+  width: 2rem;
 }
 
-/* Title */
 .titleWrap {
   position: absolute;
-  bottom: 80px;
-  left: 32px;
-  z-index: 10;
+  left: 2rem;
+  bottom: 5rem;
+  z-index: 20;
 }
-
 .title {
-  margin: 0;
   color: #fff;
-  font-weight: 700;
-  font-size: clamp(24px, 4vw, 40px);
+  font-weight: 800;
+  font-size: clamp(2rem, 2.5vw + 1rem, 3rem);
 }
 
-/* Hide native iOS/Safari controls for videos with the class below */
-:global(.no-native-controls::-webkit-media-controls-start-playback-button),
-:global(.no-native-controls::-webkit-media-controls-play-button),
-:global(.no-native-controls::-webkit-media-controls),
-:global(.no-native-controls::-webkit-media-controls-enclosure) {
-  display: none !important;
-  -webkit-appearance: none !important;
-  appearance: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
+/* Screen-reader-only helper for the hidden preloader video */
+.srOnly {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
