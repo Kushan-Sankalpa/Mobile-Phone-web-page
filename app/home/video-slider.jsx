@@ -118,7 +118,7 @@ export default function VideoSlider() {
               />
 
               {/* Play overlay if autoplay is blocked */}
-              {showPlayButton && isActive && (
+              {/* {showPlayButton && isActive && (
                 <div className={styles.cover}>
                   <button
                     onClick={handlePlayClick}
@@ -128,7 +128,7 @@ export default function VideoSlider() {
                     <Play size={48} className={styles.playIcon} />
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           );
         })}
@@ -147,7 +147,7 @@ export default function VideoSlider() {
       )}
 
       {/* Progress */}
-      <progress
+      {/* <progress
         className={styles.progress}
         role="progressbar"
         aria-valuemin={0}
@@ -155,7 +155,7 @@ export default function VideoSlider() {
         aria-valuenow={Math.round(progress)}
         max={100}
         value={progress}
-      />
+      /> */}
 
       {/* Arrows */}
       <button
