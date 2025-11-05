@@ -9,17 +9,17 @@ const slides = [
     id: 1,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/googlepixel-zLKE2ISzdrASuKOc08RhnFoNYo93M6.mp4",
-    title: "Google Pixel",
+    
   },
   {
     id: 2,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AppleShort-ioQTH3tg3LOr0klY8l1SNLfeuLffUg.mp4",
-    title: "Apple iPhone (Short)",
+    
   },
   // Local files served from /public/media
-  { id: 3, video: "/media/samsung.mp4",   title: "Samsung Galaxy" },
-  { id: 4, video: "/media/applelong.mp4", title: "Apple iPhone (Long)" },
+  { id: 3, video: "/media/samsung.mp4",  },
+  { id: 4, video: "/media/applelong.mp4",  },
 ];
 
 export default function VideoSlider() {
