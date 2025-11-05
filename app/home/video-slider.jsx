@@ -3,20 +3,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import styles from "./video-slider.module.css";
 
 const slides = [
   {
     id: 1,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/googlepixel-zLKE2ISzdrASuKOc08RhnFoNYo93M6.mp4",
-    // poster: "/google-pixel-phone.jpg",
     title: "Google Pixel",
   },
   {
     id: 2,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AppleShort-ioQTH3tg3LOr0klY8l1SNLfeuLffUg.mp4",
-    // poster: "/apple-iphone.jpg",
     title: "Apple iPhone",
   },
 ];
@@ -66,7 +65,6 @@ export default function VideoSlider() {
     const video = videoRef.current;
     if (!video) return;
 
-    // Attempt autoplay
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
@@ -95,36 +93,36 @@ export default function VideoSlider() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden pt-16" role="region" aria-label="Video slider">
+    <div className={styles.slider} role="region" aria-label="Video slider">
       {/* Video Container */}
-      <div className="relative w-full h-full">
+      <div className={styles.slidesWrap}>
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+            className={`${styles.slide} ${index === currentSlide ? styles.slideVisible : ""}`}
             role="tabpanel"
             aria-label={`Slide ${index + 1}: ${slide.title}`}
           >
             <video
               ref={index === currentSlide ? videoRef : null}
               src={slide.video}
-              poster={slide.poster}
-              className="w-full h-full object-cover"
+              className={`${styles.video} no-native-controls`}
               muted
               playsInline
+              controls={false}
+              controlsList="nodownload nofullscreen noplaybackrate"
+              disablePictureInPicture
             />
 
             {/* Play Button Overlay */}
             {showPlayButton && index === currentSlide && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <div className={styles.cover}>
                 <button
                   onClick={handlePlayClick}
-                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm p-4 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-white"
+                  className={styles.playButton}
                   aria-label="Play video"
                 >
-                  <Play size={48} className="text-white fill-white" />
+                  <Play size={48} className={styles.playIcon} />
                 </button>
               </div>
             )}
@@ -132,43 +130,41 @@ export default function VideoSlider() {
         ))}
       </div>
 
-      {/* Progress Bar */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-1 bg-white/20"
+      {/* Progress Bar (no inline styles) */}
+      <progress
+        className={styles.progress}
         role="progressbar"
-        aria-valuenow={Math.round(progress)}
         aria-valuemin={0}
         aria-valuemax={100}
-      >
-        <div className="h-full bg-white transition-all duration-100" style={{ width: `${progress}%` }} />
-      </div>
+        aria-valuenow={Math.round(progress)}
+        max={100}
+        value={progress}
+      />
 
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-white"
+        className={`${styles.navButton} ${styles.left}`}
         aria-label="Previous slide"
       >
-        <ChevronLeft size={24} className="text-white" />
+        <ChevronLeft size={24} className={styles.icon} />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-white"
+        className={`${styles.navButton} ${styles.right}`}
         aria-label="Next slide"
       >
-        <ChevronRight size={24} className="text-white" />
+        <ChevronRight size={24} className={styles.icon} />
       </button>
 
       {/* Dot Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2" role="tablist">
+      <div className={styles.dots} role="tablist">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-white ${
-              index === currentSlide ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
-            }`}
+            className={`${styles.dot} ${index === currentSlide ? styles.dotActive : ""}`}
             aria-label={`Go to slide ${index + 1}`}
             role="tab"
             aria-selected={index === currentSlide}
@@ -177,8 +173,8 @@ export default function VideoSlider() {
       </div>
 
       {/* Slide Title */}
-      <div className="absolute bottom-20 left-8 z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-white">{slides[currentSlide].title}</h2>
+      <div className={styles.titleWrap}>
+        <h2 className={styles.title}>{slides[currentSlide].title}</h2>
       </div>
     </div>
   );

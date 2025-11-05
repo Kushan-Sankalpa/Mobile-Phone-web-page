@@ -3,7 +3,8 @@
 
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import VideoSlider from "@/components/video-slider";
+import VideoSlider from "./video-slider";
+
 
 export default function HomePage() {
   return (

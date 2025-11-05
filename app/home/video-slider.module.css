@@ -1,0 +1,170 @@
+.slider {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  padding-top: 64px; /* same as your previous pt-16 for fixed navbar space */
+}
+
+/* Slides wrapper */
+.slidesWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Each slide layer */
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.slideVisible {
+  opacity: 1;
+}
+
+/* Video element */
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cover overlay (blocks native big play badge & shows our custom play) */
+.cover {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom play button */
+.playButton {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(6px);
+  border: none;
+  padding: 16px;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.playButton:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.playIcon {
+  color: #fff;
+  fill: #fff;
+}
+
+/* Progress bar (native <progress>) */
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 10;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.progress::-webkit-progress-bar {
+  background: rgba(255,255,255,0.2);
+}
+
+.progress::-webkit-progress-value {
+  background: #fff;
+  transition: width 0.1s linear;
+}
+
+.progress::-moz-progress-bar {
+  background: #fff;
+}
+
+/* Navigation buttons (arrows) */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  padding: 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.navButton:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+.left { left: 16px; }
+.right { right: 16px; }
+
+.icon { color: #fff; }
+
+/* Dots */
+.dots {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, width 0.2s ease;
+}
+
+.dot:hover { background: rgba(255,255,255,0.75); }
+
+.dotActive {
+  width: 32px;
+  background: #fff;
+}
+
+/* Title */
+.titleWrap {
+  position: absolute;
+  bottom: 80px;
+  left: 32px;
+  z-index: 10;
+}
+
+.title {
+  margin: 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(24px, 4vw, 40px);
+}
+
+/* Hide native iOS/Safari controls for videos with the class below */
+:global(.no-native-controls::-webkit-media-controls-start-playback-button),
+:global(.no-native-controls::-webkit-media-controls-play-button),
+:global(.no-native-controls::-webkit-media-controls),
+:global(.no-native-controls::-webkit-media-controls-enclosure) {
+  display: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
