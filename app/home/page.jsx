@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import VideoSlider from "./video-slider";
 import Categories from "./categories";
 import AppleProducts from "./apple-products";
+import AndroidVedio from "./androidvedio";
 
 export default function HomePage() {
   return (
@@ -14,6 +15,10 @@ export default function HomePage() {
         <VideoSlider />
         <Categories />
         <AppleProducts title="Latest Apple Phones" />
+        <AndroidVedio
+          title="Android Highlights"
+          src="/media/android1.mp4"  
+        />
       </main>
       <Footer />
     </div>
