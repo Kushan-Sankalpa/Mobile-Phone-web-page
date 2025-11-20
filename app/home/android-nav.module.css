@@ -1,0 +1,96 @@
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 0;
+}
+
+.headRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.5rem);
+  font-weight: 800;
+  color: var(--foreground, #111);
+  margin: 0;
+}
+
+.error {
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.loading {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--muted-foreground, #6b7280);
+}
+
+/* Horizontal brand scroller */
+.scroller {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  scrollbar-width: thin;
+}
+
+/* Optional scrollbar styling (works in some browsers) */
+.scroller::-webkit-scrollbar {
+  height: 6px;
+}
+.scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroller::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+/* Brand pill */
+.brand {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--card, #fff);
+  color: var(--foreground, #111);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.brand:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.brand:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* Optional logo */
+.logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+.brandName {
+  white-space: nowrap;
+}

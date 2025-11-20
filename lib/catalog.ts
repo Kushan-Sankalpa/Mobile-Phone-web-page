@@ -23,6 +23,14 @@ export type StorefrontProduct = {
   images: string[];
 };
 
+
+export type StorefrontBrand = {
+  id: string;
+  name: string;
+  status: string;
+  imageUrl?: string;
+};
+
 export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
   const specs: string[] = [];
   if (item.display?.sizeInches || item.display?.type) {
@@ -62,4 +70,21 @@ export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
   const data = await res.json();
   const items: AdminAppleItem[] = data?.items ?? [];
   return items.map(mapApplePhone);
+}
+
+
+export async function fetchBrands(): Promise<StorefrontBrand[]> {
+  const url = `${API}/brands?status=Active&limit=50&sortBy=createdAt&sortOrder=asc`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Brands fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const brands = data?.brands ?? [];
+
+  return brands.map((b: any) => ({
+    id: b._id,
+    name: b.name,
+    status: b.status,
+    imageUrl: b.imageUrl ? `${ASSET_BASE}${b.imageUrl}` : undefined,
+  }));
 }

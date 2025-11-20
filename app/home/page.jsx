@@ -6,6 +6,7 @@ import VideoSlider from "./video-slider";
 import Categories from "./categories";
 import AppleProducts from "./apple-products";
 import AndroidVedio from "./androidvedio";
+import AndroidNav from "./android-nav"; 
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
           title="Android Highlights"
           src="/media/android1.mp4"  
         />
+         <AndroidNav title="Shop by Android Brand" />
       </main>
       <Footer />
     </div>
