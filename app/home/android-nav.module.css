@@ -104,8 +104,8 @@
 
 /* Small brand logo above text */
 .logo {
-  width: 180px;           /* a bit bigger */
-  height: 180px;
+  width: 120px;           /* a bit bigger */
+  height: 120px;
   object-fit: contain;
    
 }
