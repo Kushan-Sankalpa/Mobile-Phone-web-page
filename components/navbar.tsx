@@ -24,7 +24,7 @@ export default function Navbar() {
   const isActive = (path: string) => pathname === path;
 
   const navLinks = [
-    { href: "/home", label: "Home" }, // <- updated to /home
+    { href: "/home", label: "Home" },
     { href: "/apple", label: "Apple" },
     { href: "/android", label: "Android" },
     { href: "/jbl", label: "JBL" },
@@ -32,18 +32,18 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur border-b border-border shadow-sm" : "bg-transparent"
-      }`}
       role="navigation"
       aria-label="Main navigation"
+      className={`fixed top-0 w-full z-50 transition-all duration-300 bg-black text-white ${
+        isScrolled ? "shadow-md" : "shadow-none"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/home"
-            className="flex items-center gap-2 font-bold text-xl focus:outline-none focus:ring-2 focus:ring-primary rounded-lg px-2 py-1"
+            className="flex items-center gap-2 font-bold text-xl text-white focus:outline-none focus:ring-2 focus:ring-primary rounded-lg px-2 py-1"
           >
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
               P
@@ -59,8 +59,8 @@ export default function Navbar() {
                 href={link.href}
                 className={`text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1 ${
                   isActive(link.href)
-                    ? "text-primary border-b-2 border-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-white border-b-2 border-white"
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 {link.label}
@@ -70,9 +70,10 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
+            {/* Theme toggle (still affects the rest of the site, navbar stays black) */}
             <button
               onClick={toggleTheme}
-              className="p-2 hover:bg-secondary rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+              className="p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary hover:bg-white/10 text-white"
               aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
@@ -80,7 +81,7 @@ export default function Navbar() {
 
             <Link
               href="/cart"
-              className="relative p-2 hover:bg-secondary rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+              className="relative p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary hover:bg-white/10 text-white"
               aria-label={`Shopping cart with ${items.length} items`}
             >
               <ShoppingCart size={20} />
@@ -94,7 +95,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 hover:bg-secondary rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+              className="md:hidden p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary hover:bg-white/10 text-white"
               aria-label="Toggle menu"
               aria-expanded={isOpen}
             >
@@ -105,15 +106,17 @@ export default function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4 border-t border-border">
+          <div className="md:hidden pb-4 border-t border-white/10">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
-                  isActive(link.href) ? "text-primary bg-secondary" : "text-muted-foreground hover:text-foreground"
-                }`}
                 onClick={() => setIsOpen(false)}
+                className={`block px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+                  isActive(link.href)
+                    ? "text-white bg-white/10"
+                    : "text-white/70 hover:text-white"
+                }`}
               >
                 {link.label}
               </Link>
