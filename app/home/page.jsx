@@ -7,6 +7,7 @@ import Categories from "./categories";
 import AppleProducts from "./apple-products";
 import AndroidVedio from "./androidvedio";
 import AndroidNav from "./android-nav"; 
+import JblVedio from "./jblvedio"; 
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
         />
        <br/>
          <AndroidNav title="Shop by Android Brand" />
+         <JblVedio />
       </main>
       <Footer />
     </div>
