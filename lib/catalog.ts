@@ -1,6 +1,7 @@
 const API = process.env.NEXT_PUBLIC_API_URL!;
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE!;
 
+// Generic admin-side item shape used for Apple + Android devices
 type AdminAppleItem = {
   _id: string;
   brand?: string;
@@ -15,14 +16,13 @@ type AdminAppleItem = {
 
 export type StorefrontProduct = {
   id: string;
-  brand: "apple";
+  brand: string;      // ← was "apple", now generic
   name: string;
   model: string;
   price: number;
   specs: string[];
   images: string[];
 };
-
 
 export type StorefrontBrand = {
   id: string;
@@ -31,11 +31,13 @@ export type StorefrontBrand = {
   imageUrl?: string;
 };
 
-export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
+/** Generic mapper for any device document to storefront product */
+function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
   const specs: string[] = [];
+
   if (item.display?.sizeInches || item.display?.type) {
     const size = item.display?.sizeInches ? `${item.display.sizeInches}"` : "";
-    const typ  = item.display?.type ? ` ${item.display.type}` : "";
+    const typ = item.display?.type ? ` ${item.display.type}` : "";
     const label = `${size}${typ}`.trim();
     if (label) specs.push(label);
   }
@@ -54,13 +56,20 @@ export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
 
   return {
     id: item._id,
-    brand: "apple",
+    brand: item.brand || "Unknown",
     name: item.model,
     model: item.model,
     price: item.price,
     specs,
     images,
   };
+}
+
+/** Apple-specific helper (still used by AppleProducts) */
+export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
+  const base = mapDeviceToStorefront(item);
+  // force brand to "Apple" if you like, or trust DB value
+  return { ...base, brand: item.brand || "Apple" };
 }
 
 export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
@@ -71,7 +80,6 @@ export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
   const items: AdminAppleItem[] = data?.items ?? [];
   return items.map(mapApplePhone);
 }
-
 
 export async function fetchBrands(): Promise<StorefrontBrand[]> {
   const url = `${API}/brands?status=Active&limit=50&sortBy=createdAt&sortOrder=asc`;
@@ -87,4 +95,24 @@ export async function fetchBrands(): Promise<StorefrontBrand[]> {
     status: b.status,
     imageUrl: b.imageUrl ? `${ASSET_BASE}${b.imageUrl}` : undefined,
   }));
+}
+
+
+export async function fetchAndroidPhonesByBrand(
+  brandName: string
+): Promise<StorefrontProduct[]> {
+  const params = new URLSearchParams({
+    status: "Active",
+    inStock: "true",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    brandName,
+  });
+  const url = `${API}/android/phones?${params.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Android catalog fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const items: AdminAppleItem[] = data?.items ?? [];
+  return items.map(mapDeviceToStorefront);
 }
