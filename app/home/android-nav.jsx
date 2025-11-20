@@ -126,9 +126,9 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
 
   return (
     <section className={styles.wrap} aria-label="Android brands navigation">
-      <div className={styles.headRow}>
+      <header className={styles.headRow}>
         <h2 className={styles.title}>{title}</h2>
-      </div>
+      </header>
 
       {brandErr && <div className={styles.error}>{brandErr}</div>}
 
@@ -136,33 +136,36 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
         <div className={styles.loading}>Loading brands…</div>
       ) : (
         <>
-          <nav className={styles.scroller} aria-label="Android brands">
-            {brands.map((brand) => {
-              const isActive = activeBrand && activeBrand.id === brand.id;
-              return (
-                <button
-                  key={brand.id}
-                  type="button"
-                  className={
-                    isActive
-                      ? `${styles.brand} ${styles.brandActive}`
-                      : styles.brand
-                  }
-                  onClick={() => setActiveBrand(brand)}
-                >
-                  {brand.imageUrl && (
-                    <img
-                      src={brand.imageUrl}
-                      alt={`${brand.name} logo`}
-                      className={styles.logo}
-                      loading="lazy"
-                    />
-                  )}
-                  <span className={styles.brandName}>{brand.name}</span>
-                </button>
-              );
-            })}
-          </nav>
+         <nav className={styles.scroller} aria-label="Android brands">
+  {brands.map((brand) => {
+    const isActive = activeBrand && activeBrand.id === brand.id;
+    return (
+      <button
+        key={brand.id}
+        type="button"
+        className={
+          isActive
+            ? `${styles.brand} ${styles.brandActive}`
+            : styles.brand
+        }
+        onClick={() => setActiveBrand(brand)}
+      >
+        {brand.imageUrl && (
+          <img
+            src={brand.imageUrl}
+            alt={`${brand.name} logo`}
+            className={styles.logo}      
+            loading="lazy"
+          />
+        )}
+        <span className={styles.brandName}>{brand.name}</span>
+      </button>
+    );
+  })}
+</nav>
+
+
+          
 
           {activeBrand && (
             <>
@@ -175,7 +178,11 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
               {loadingProducts ? (
                 <div className={styles.loading}>Loading products…</div>
               ) : (
-                <div className={styles.grid}>
+                // key makes the grid remount when brand changes → smooth animation
+                <div
+                  key={activeBrand.id}
+                  className={`${styles.grid} ${styles.gridAnimated}`}
+                >
                   {list.map((p) => {
                     const img =
                       p.images?.[0] || "/placeholder.svg?height=400&width=400";

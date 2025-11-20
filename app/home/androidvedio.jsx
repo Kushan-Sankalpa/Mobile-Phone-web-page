@@ -5,7 +5,7 @@ import { Play } from "lucide-react";
 import styles from "./androidvedio.module.css";
 
 export default function AndroidVedio({
-  title = "Android Highlights",
+  title = "",
   src = "/media/android.mp4", // put your file in /public/media
 }) {
   const videoRef = useRef(null);
@@ -91,7 +91,7 @@ export default function AndroidVedio({
           )}
         </div>
 
-        {title && <h3 className={styles.title}>{title}</h3>}
+       
       </div>
     </section>
   );

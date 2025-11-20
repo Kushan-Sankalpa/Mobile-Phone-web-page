@@ -20,6 +20,7 @@ export default function HomePage() {
           title="Android Highlights"
           src="/media/android1.mp4"  
         />
+       <br/>
          <AndroidNav title="Shop by Android Brand" />
       </main>
       <Footer />
