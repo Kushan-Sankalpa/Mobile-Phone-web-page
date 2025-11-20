@@ -1,13 +1,14 @@
 .section {
   width: 100%;
   background: var(--background, #fff);
-  padding: 2.5rem 1rem;
+  padding: 3rem 1rem;     
 }
 
 .inner {
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 2280px;      
+  margin: 0 auto;        
 }
+
 
 .videoWrap {
   position: relative;
