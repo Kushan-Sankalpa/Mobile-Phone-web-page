@@ -1,0 +1,188 @@
+.speakersSection {
+  padding: 4rem 0;
+  background: #ffffff;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Title row */
+.speakersHeader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.speakersTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Brand tabs row (JBL / MARSHALL / BASEUS / ...) */
+.speakersTabs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 3rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2.5rem;
+  padding-left: 0.15rem;
+}
+
+.speakersTab {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  padding-bottom: 0.4rem;
+  color: #9ca3af;
+  position: relative;
+  letter-spacing: 0.12em;
+}
+
+.speakersTabActive {
+  color: #111827;
+}
+
+.speakersTabActive::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #111827;
+}
+
+/* Grid + cards
+   -------------------------------------------------- */
+/* KEY FIX: cards never wider than ~320px, even if only one item */
+.speakersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+  gap: 2rem;
+  justify-content: flex-start; /* or center if you want centered cards */
+}
+
+.speakersEmpty {
+  grid-column: 1 / -1;
+  color: #6b7280;
+}
+
+/* Card */
+
+.speakerCard {
+  width: 100%;
+  max-width: 320px;              /* prevents stretching */
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  padding: 1.75rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  /* remove or reduce if it feels too tall */
+  /* min-height: 430px; */
+}
+
+.speakerCardImage {
+  border-radius: 18px;
+  background: #f3f4f6;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.speakerCardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.speakerCardBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.speakerCardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.speakerCardSubtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+/* Color dots row */
+
+.speakerCardSwatches {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.speakerCardSwatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px #e5e7eb;
+}
+
+/* Price */
+
+.speakerCardPriceRow {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.speakerCardPriceOld {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.speakerCardPrice {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .speakersHeader {
+    margin-bottom: 0.5rem;
+  }
+
+  .speakersTabs {
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .speakersGrid {
+    justify-content: center; /* single card nicely centered on mobile */
+  }
+
+  .speakerCard {
+    max-width: 100%;
+  }
+}

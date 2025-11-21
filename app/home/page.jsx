@@ -6,8 +6,10 @@ import VideoSlider from "./video-slider";
 import Categories from "./categories";
 import AppleProducts from "./apple-products";
 import AndroidVedio from "./androidvedio";
-import AndroidNav from "./android-nav"; 
-import JblVedio from "./jblvedio"; 
+import AndroidNav from "./android-nav";
+import JblVedio from "./jblvedio";
+
+import Speakers from "./Speakers";
 
 export default function HomePage() {
   return (
@@ -17,13 +19,14 @@ export default function HomePage() {
         <VideoSlider />
         <Categories />
         <AppleProducts title="Latest Apple Phones" />
-        <AndroidVedio
-          title="Android Highlights"
-          src="/media/android1.mp4"  
-        />
-       <br/>
-         <AndroidNav title="Shop by Android Brand" />
-         <JblVedio />
+
+        <AndroidVedio title="Android Highlights" src="/media/android1.mp4" />
+        <br />
+        <AndroidNav title="Shop by Android Brand" />
+        <JblVedio />
+
+        
+        <Speakers />
       </main>
       <Footer />
     </div>
