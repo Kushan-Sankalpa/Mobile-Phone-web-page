@@ -55,18 +55,26 @@ export type StorefrontBrand = {
   imageUrl?: string;
 };
 
+// ⬇️ UPDATED: shape coming from BrandNewSpeaker collection
 type AdminSpeakerItem = {
   _id: string;
-  brand: string; // ObjectId
-  brandName: string;
+  brand: string; // brand name e.g. "JBL"
+  categoryType?: string;
   model: string;
   price: number;
-  offerType?: "percent" | "amount" | null;
-  offerValue?: number;
-  description?: string;
+
+  discountType?: "percent" | "amount" | null;
+  discountValue?: number | null;
+
   colors?: string[];
   mainImageUrl?: string;
   galleryImageUrls?: string[];
+
+  shortDescription?: string;
+  longDescription?: string;
+
+  inStock?: boolean;
+  status?: string;
 };
 
 function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
@@ -85,30 +93,39 @@ function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
   const rawPrice = item.price ?? 0;
   let finalPrice = rawPrice;
 
-  if (item.offerType === "percent" && item.offerValue) {
-    finalPrice = rawPrice * (1 - item.offerValue / 100);
-  } else if (item.offerType === "amount" && item.offerValue) {
-    finalPrice = rawPrice - item.offerValue;
+  let offerType: "percent" | "amount" | null = null;
+  let offerValue = 0;
+
+  if (item.discountType === "percent" && item.discountValue) {
+    offerType = "percent";
+    offerValue = item.discountValue;
+    finalPrice = rawPrice * (1 - item.discountValue / 100);
+  } else if (item.discountType === "amount" && item.discountValue) {
+    offerType = "amount";
+    offerValue = item.discountValue;
+    finalPrice = rawPrice - item.discountValue;
   }
   if (finalPrice < 0) finalPrice = 0;
 
   const specs: string[] = [];
-  if (item.description) specs.push(item.description);
+  if (item.shortDescription) specs.push(item.shortDescription);
+  if (item.longDescription) specs.push(item.longDescription);
   if (item.colors?.length) specs.push(item.colors.join(", "));
 
   return {
     id: item._id,
-    brandId: item.brand,
-    brand: item.brandName,
+    // brand name directly from document (e.g. "JBL")
+    brand: item.brand,
     name: item.model,
     model: item.model,
     price: finalPrice,
     specs,
     images,
     originalPrice: rawPrice,
-    offerType: item.offerType ?? null,
-    offerValue: item.offerValue ?? 0,
+    offerType,
+    offerValue,
     colors: item.colors ?? [],
+    categoryType: item.categoryType,
   };
 }
 
@@ -260,7 +277,7 @@ export async function fetchSpeakerBrands(): Promise<StorefrontBrand[]> {
   }));
 }
 
-// All active speakers (we’ll filter by brand on the front-end)
+// All active speakers (BrandNewSpeaker via /public/speakers)
 export async function fetchSpeakers(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     status: "Active",

@@ -1,3 +1,4 @@
+// src/app/home/Speakers.jsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -12,7 +13,7 @@ export default function Speakers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load brands + speakers once (similar to AndroidNav)
+  // Load brands + speakers once
   useEffect(() => {
     let alive = true;
 
@@ -49,9 +50,15 @@ export default function Speakers() {
     };
   }, []);
 
+  // ⬇️ UPDATED: filter by brand NAME, not brandId
   const filtered = useMemo(() => {
     if (!activeBrand) return products;
-    return products.filter((p) => p.brandId === activeBrand.id);
+
+    const activeName = (activeBrand.name || "").toLowerCase().trim();
+
+    return products.filter(
+      (p) => (p.brand || "").toLowerCase().trim() === activeName
+    );
   }, [products, activeBrand]);
 
   const activeName = activeBrand?.name ?? "this brand";
@@ -102,7 +109,11 @@ export default function Speakers() {
                 <article key={p.id} className={styles.speakerCard}>
                   {/* Image */}
                   <div className={styles.speakerCardImage}>
-                    <img src={p.images?.[0]} alt={p.name} loading="lazy" />
+                    <img
+                      src={p.images?.[0] || "/placeholder.svg?height=400&width=400"}
+                      alt={p.name}
+                      loading="lazy"
+                    />
                   </div>
 
                   {/* Text + details */}
@@ -112,7 +123,7 @@ export default function Speakers() {
                       Portable Speakers, {p.brand}, Sounds
                     </p>
 
-                    {/* Color dots (like screenshot bottom left) */}
+                    {/* Color dots */}
                     {p.colors?.length > 0 && (
                       <div
                         className={styles.speakerCardSwatches}
