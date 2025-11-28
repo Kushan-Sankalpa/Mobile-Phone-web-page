@@ -1,8 +1,8 @@
-// phone web panel: src/lib/catalog.ts
+// src/lib/catalog.ts
 const API = process.env.NEXT_PUBLIC_API_URL!;
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE!;
 
-// Admin-side item coming from BrandNewMobilePhone collection (public /phones)
+// Item coming from BrandNewMobilePhone (public /phones)
 type AdminAppleItem = {
   _id: string;
   brand?: string;
@@ -10,7 +10,7 @@ type AdminAppleItem = {
   model: string;
   price: number;
 
-  // Discounts from BrandNewMobilePhone
+  // Discount fields from BrandNewMobilePhone
   discountType?: "percent" | "amount" | null;
   discountValue?: number | null;
 
@@ -43,7 +43,7 @@ export type StorefrontProduct = {
   offerValue?: number;
   colors?: string[];
 
-  // New fields for UI
+  // extra info for UI
   categoryType?: string;
   deviceStatus?: string;
 };
@@ -174,15 +174,21 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
 /** Apple-specific helper (still used by AppleProducts) */
 export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
   const base = mapDeviceToStorefront(item);
-  // Force brand label to "Apple" for the storefront
+  // Force label to "Apple" for storefront
   return { ...base, brand: item.brand || "Apple" };
 }
 
+/**
+ * Fetch Apple phones (BrandNewMobilePhone collection)
+ * Only:
+ *  - brand: Apple
+ *  - deviceStatus: not used
+ *  - status: Active
+ *  - inStock: true
+ */
 export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
-  // Hit /public/phones with filters so we only get "Apple" + "SmartPhone" + "not used"
   const params = new URLSearchParams({
     brand: "Apple",
-    categoryType: "SmartPhone",
     deviceStatus: "not used",
     status: "Active",
     inStock: "true",

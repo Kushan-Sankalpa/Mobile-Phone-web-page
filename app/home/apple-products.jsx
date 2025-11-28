@@ -1,4 +1,4 @@
-// phone web panel: src/app/home/apple-products.jsx
+// src/app/home/apple-products.jsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -29,7 +29,7 @@ function deviceTypeFromName(name) {
 }
 
 function colorCandidates(item) {
-  // Prefer colors from the API (BrandNewMobilePhone.colors)
+  // Prefer colors from BrandNewMobilePhone.colors
   const fromApi =
     item?.colors ||
     item?.availableColors ||
@@ -74,24 +74,17 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
     };
   }, []);
 
-  // Trim to "limit"
   const limited = useMemo(() => items.slice(0, limit), [items, limit]);
 
-  // Extra safety filter on the client:
-  // - brand: Apple
-  // - categoryType: SmartPhone
-  // - deviceStatus: not used
+  // Extra safety client-side:
+  // - brand = Apple
+  // - deviceStatus = not used
   const list = useMemo(() => {
     return limited.filter((p) => {
-      const brandOk = (p.brand || "").toLowerCase() === "apple";
-
-      const catRaw = (p.categoryType || "").toLowerCase().replace(/\s+/g, "");
-      const catOk = catRaw === "smartphone"; // "SmartPhone" or "Smart Phone"
-
+      const brandOk = (p.brand || "").toLowerCase().trim() === "apple";
       const statusOk =
         (p.deviceStatus || "").toLowerCase().trim() === "not used";
-
-      return brandOk && catOk && statusOk;
+      return brandOk && statusOk;
     });
   }, [limited]);
 
@@ -116,7 +109,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
       {loading ? (
         <div className={styles.loading}>Loading…</div>
       ) : list.length === 0 ? (
-        <div className={styles.empty}>No Apple smartphones found.</div>
+        <div className={styles.empty}>No Apple phones found.</div>
       ) : (
         <div className={styles.grid}>
           {list.map((p) => {
