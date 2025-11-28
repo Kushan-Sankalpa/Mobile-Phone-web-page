@@ -1,3 +1,4 @@
+// phone web panel: src/app/home/apple-products.jsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -8,7 +9,13 @@ import { useCart } from "@/context/cart-context";
 
 function formatRs(n) {
   const num = Number(n || 0);
-  return "Rs." + num.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (
+    "Rs." +
+    num.toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  );
 }
 
 function deviceTypeFromName(name) {
@@ -22,7 +29,7 @@ function deviceTypeFromName(name) {
 }
 
 function colorCandidates(item) {
-  // Try common fields if your admin API exposes colors
+  // Prefer colors from the API (BrandNewMobilePhone.colors)
   const fromApi =
     item?.colors ||
     item?.availableColors ||
@@ -30,11 +37,17 @@ function colorCandidates(item) {
     item?.variants?.flatMap?.((v) => v?.color).filter(Boolean);
 
   if (Array.isArray(fromApi) && fromApi.length) {
-    // Normalize to hex-ish or CSS color names
     return fromApi.slice(0, 6);
   }
-  // Nice defaults if nothing provided
-  return ["#1f2937", "#e5e7eb", "#f59e0b", "#10b981", "#3b82f6", "#94a3b8"].slice(0, 4);
+  // Fallback palette
+  return [
+    "#1f2937",
+    "#e5e7eb",
+    "#f59e0b",
+    "#10b981",
+    "#3b82f6",
+    "#94a3b8",
+  ].slice(0, 4);
 }
 
 export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
@@ -61,7 +74,26 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
     };
   }, []);
 
-  const list = useMemo(() => items.slice(0, limit), [items, limit]);
+  // Trim to "limit"
+  const limited = useMemo(() => items.slice(0, limit), [items, limit]);
+
+  // Extra safety filter on the client:
+  // - brand: Apple
+  // - categoryType: SmartPhone
+  // - deviceStatus: not used
+  const list = useMemo(() => {
+    return limited.filter((p) => {
+      const brandOk = (p.brand || "").toLowerCase() === "apple";
+
+      const catRaw = (p.categoryType || "").toLowerCase().replace(/\s+/g, "");
+      const catOk = catRaw === "smartphone"; // "SmartPhone" or "Smart Phone"
+
+      const statusOk =
+        (p.deviceStatus || "").toLowerCase().trim() === "not used";
+
+      return brandOk && catOk && statusOk;
+    });
+  }, [limited]);
 
   const onAddToCart = (p) => {
     addItem({
@@ -80,18 +112,32 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
       </div>
 
       {err && <div className={styles.error}>{err}</div>}
+
       {loading ? (
         <div className={styles.loading}>Loading…</div>
+      ) : list.length === 0 ? (
+        <div className={styles.empty}>No Apple smartphones found.</div>
       ) : (
         <div className={styles.grid}>
           {list.map((p) => {
             const img = p.images?.[0] || "/placeholder.svg?height=400&width=400";
             const device = deviceTypeFromName(p.name || p.model);
             const colors = colorCandidates(p);
+
+            const categoryLabel = p.categoryType || device;
+            const statusLabel =
+              p.deviceStatus &&
+              (p.deviceStatus.toLowerCase() === "not used" ? "Not used" : "Used");
+
             return (
               <article key={p.id} className={styles.card}>
                 <div className={styles.media}>
-                  <img src={img} alt={p.name} className={styles.image} loading="lazy" />
+                  <img
+                    src={img}
+                    alt={p.name}
+                    className={styles.image}
+                    loading="lazy"
+                  />
                   <div className={styles.actions}>
                     <button
                       type="button"
@@ -122,9 +168,18 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
 
                 <div className={styles.body}>
                   <h3 className={styles.name}>{p.name}</h3>
-                  <p className={styles.sub}>Apple, {device}</p>
 
-                  <div className={styles.swatches} aria-label="Available colors">
+                  {/* Show brand + categoryType + deviceStatus */}
+                  <p className={styles.sub}>
+                    {p.brand || "Apple"},{" "}
+                    {categoryLabel || device}
+                    {statusLabel ? ` • ${statusLabel}` : ""}
+                  </p>
+
+                  <div
+                    className={styles.swatches}
+                    aria-label="Available colors"
+                  >
                     {colors.map((c, i) => (
                       <span
                         key={i}
