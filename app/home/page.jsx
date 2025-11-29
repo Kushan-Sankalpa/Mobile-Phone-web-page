@@ -8,6 +8,9 @@ import AppleProducts from "./apple-products";
 import AndroidVedio from "./androidvedio";
 import AndroidNav from "./android-nav";
 import JblVedio from "./jblvedio";
+import UsedItems from "./usedItems";
+
+
 
 import Speakers from "./Speakers";
 
@@ -19,6 +22,7 @@ export default function HomePage() {
         <VideoSlider />
         <Categories />
         <AppleProducts title="Latest Apple Phones" />
+        <UsedItems />
 
         <AndroidVedio title="Android Highlights" src="/media/android1.mp4" />
         <br />

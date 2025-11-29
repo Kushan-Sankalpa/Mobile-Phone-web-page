@@ -223,6 +223,50 @@ export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
   return items.map(mapApplePhone);
 }
 
+export async function fetchUsedApplePhones(): Promise<StorefrontProduct[]> {
+  const params = new URLSearchParams({
+    brand: "Apple",
+    deviceStatus: "used",      // ⚠️ key difference
+    status: "Active",
+    inStock: "true",
+    limit: "100",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+
+  const url = `${API}/phones?${params.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Catalog fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const items: AdminAppleItem[] = data?.items ?? [];
+  return items.map(mapApplePhone);
+}
+
+
+// All used items (phones, tablets, smart watches, earbuds)
+export async function fetchUsedItems(): Promise<StorefrontProduct[]> {
+  const params = new URLSearchParams({
+    deviceStatus: "used",
+    status: "Active",
+    inStock: "true",
+    limit: "200",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+
+  const url = `${API}/used-items?${params.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Used items fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const items: AdminAppleItem[] = data?.items ?? [];
+  // Reuse the same mapper – it gracefully ignores missing fields
+  return items.map(mapDeviceToStorefront);
+}
+
+
+
 export async function fetchBrands(): Promise<StorefrontBrand[]> {
   const url = `${API}/brands?status=Active&limit=50&sortBy=createdAt&sortOrder=asc`;
   const res = await fetch(url, { cache: "no-store" });
