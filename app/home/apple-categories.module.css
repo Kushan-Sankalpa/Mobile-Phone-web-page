@@ -1,0 +1,125 @@
+.section {
+  padding: 3rem 1rem;
+  background: #ffffff;
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+/* Grid mimicking Apple layout:
+   macbook & ipad tall, watch & airpods stacked */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 220px));
+  grid-template-areas:
+    "macbook ipad watch"
+    "macbook ipad airpods";
+  gap: 1.5rem;
+}
+
+/* Base card style */
+.card {
+  border-radius: 32px;
+  background: #f5f5f7;
+  padding: 1.75rem 1.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* Map each card to its grid area */
+.macbookCard {
+  grid-area: macbook;
+}
+
+.ipadCard {
+  grid-area: ipad;
+}
+
+.watchCard {
+  grid-area: watch;
+}
+
+.airpodsCard {
+  grid-area: airpods;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #111827;
+  cursor: pointer;
+}
+
+.viewAll:hover {
+  opacity: 0.7;
+}
+
+.chevron {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Image block */
+.imageWrap {
+  margin-top: 1rem;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Responsive: stack cards on small screens */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas: none;
+  }
+
+  .card,
+  .macbookCard,
+  .ipadCard,
+  .watchCard,
+  .airpodsCard {
+    grid-area: auto;
+  }
+}
