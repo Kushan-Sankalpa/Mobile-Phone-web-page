@@ -6,8 +6,6 @@ import { fetchBrands, fetchAndroidPhonesByBrand } from "@/lib/catalog";
 import { ShoppingCart, Search, Heart } from "lucide-react";
 import { useCart } from "@/context/cart-context";
 
-/* Helpers copied from AppleProducts so the cards look/behave the same */
-
 function formatRs(n) {
   const num = Number(n || 0);
   return (
@@ -23,7 +21,8 @@ function deviceTypeFromName(name) {
   const s = (name || "").toLowerCase();
   if (s.includes("watch")) return "Watch";
   if (s.includes("tablet") || s.includes("tab")) return "Tablet";
-  if (s.includes("buds") || s.includes("ear") || s.includes("pod")) return "Earbuds";
+  if (s.includes("buds") || s.includes("ear") || s.includes("pod"))
+    return "Earbuds";
   return "Phone";
 }
 
@@ -63,11 +62,10 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
       try {
         setLoadingBrands(true);
         const data = await fetchBrands();
-        const androidOnly = data.filter(
-          (b) => b.name.toLowerCase() !== "apple"
-        );
+        const androidOnly = data.filter((b) => b.name.toLowerCase() !== "apple");
         if (!alive) return;
         setBrands(androidOnly);
+
         // auto-select first brand
         if (androidOnly.length > 0) {
           setActiveBrand(androidOnly[0]);
@@ -136,49 +134,43 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
         <div className={styles.loading}>Loading brands…</div>
       ) : (
         <>
-         <nav className={styles.scroller} aria-label="Android brands">
-  {brands.map((brand) => {
-    const isActive = activeBrand && activeBrand.id === brand.id;
-    return (
-      <button
-        key={brand.id}
-        type="button"
-        className={
-          isActive
-            ? `${styles.brand} ${styles.brandActive}`
-            : styles.brand
-        }
-        onClick={() => setActiveBrand(brand)}
-      >
-        {brand.imageUrl && (
-          <img
-            src={brand.imageUrl}
-            alt={`${brand.name} logo`}
-            className={styles.logo}      
-            loading="lazy"
-          />
-        )}
-        <span className={styles.brandName}>{brand.name}</span>
-      </button>
-    );
-  })}
-</nav>
-
-
-          
+          <nav className={styles.scroller} aria-label="Android brands">
+            {brands.map((brand) => {
+              const isActive = activeBrand && activeBrand.id === brand.id;
+              return (
+                <button
+                  key={brand.id}
+                  type="button"
+                  className={
+                    isActive
+                      ? `${styles.brand} ${styles.brandActive}`
+                      : styles.brand
+                  }
+                  onClick={() => setActiveBrand(brand)}
+                >
+                  {brand.imageUrl && (
+                    <img
+                      src={brand.imageUrl}
+                      alt={`${brand.name} logo`}
+                      className={styles.logo}
+                      loading="lazy"
+                    />
+                  )}
+                  <span className={styles.brandName}>{brand.name}</span>
+                </button>
+              );
+            })}
+          </nav>
 
           {activeBrand && (
             <>
-              <p className={styles.subtitle}>
-                Showing {activeBrand.name} phones
-              </p>
+              <p className={styles.subtitle}>Showing {activeBrand.name} phones</p>
 
               {productErr && <div className={styles.error}>{productErr}</div>}
 
               {loadingProducts ? (
                 <div className={styles.loading}>Loading products…</div>
               ) : (
-                // key makes the grid remount when brand changes → smooth animation
                 <div
                   key={activeBrand.id}
                   className={`${styles.grid} ${styles.gridAnimated}`}
@@ -189,15 +181,40 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
                     const device = deviceTypeFromName(p.name || p.model);
                     const colors = colorCandidates(p);
 
+                    // ✅ Discount logic (don’t depend on offerType; just compare prices)
+                    const original = Number(p.originalPrice ?? p.price ?? 0);
+                    const price = Number(p.price ?? 0);
+                    const hasDiscount =
+                      Number.isFinite(original) &&
+                      Number.isFinite(price) &&
+                      original > price;
+
+                    const discountPct =
+                      hasDiscount && original > 0
+                        ? Math.round(((original - price) / original) * 100)
+                        : 0;
+
+                    const discountLabel = hasDiscount ? `${discountPct}% OFF` : "";
+
                     return (
                       <article key={p.id} className={styles.card}>
                         <div className={styles.media}>
+                          {/* ✅ Badge */}
+                          {hasDiscount && (
+                            <div className={styles.badges}>
+                              <span className={styles.badgeOff}>
+                                {discountLabel}
+                              </span>
+                            </div>
+                          )}
+
                           <img
                             src={img}
                             alt={p.name}
                             className={styles.image}
                             loading="lazy"
                           />
+
                           <div className={styles.actions}>
                             <button
                               type="button"
@@ -207,6 +224,7 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
                             >
                               <ShoppingCart size={18} />
                             </button>
+
                             <button
                               type="button"
                               className={styles.iconBtn}
@@ -219,6 +237,7 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
                             >
                               <Search size={18} />
                             </button>
+
                             <button
                               type="button"
                               className={styles.iconBtn}
@@ -245,18 +264,20 @@ export default function AndroidNav({ title = "Browse by Android Brand" }) {
                                 key={i}
                                 className={styles.swatch}
                                 style={{ backgroundColor: c }}
-                                title={
-                                  typeof c === "string"
-                                    ? c
-                                    : `Color ${i + 1}`
-                                }
+                                title={typeof c === "string" ? c : `Color ${i + 1}`}
                                 aria-hidden="true"
                               />
                             ))}
                           </div>
 
-                          <div className={styles.price}>
-                            {formatRs(p.price)}
+                          {/* ✅ Old price + New price */}
+                          <div className={styles.priceWrap}>
+                            {hasDiscount && (
+                              <div className={styles.oldPrice}>
+                                {formatRs(original)}
+                              </div>
+                            )}
+                            <div className={styles.newPrice}>{formatRs(price)}</div>
                           </div>
                         </div>
                       </article>

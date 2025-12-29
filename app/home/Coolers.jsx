@@ -1,9 +1,19 @@
-// src/app/home/Coolers.jsx
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "./Coolers.module.css";
 import { fetchCoolers } from "@/lib/catalog";
+
+function formatRs(n) {
+  const num = Number(n || 0);
+  return (
+    "Rs." +
+    num.toLocaleString("en-LK", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })
+  );
+}
 
 export default function Coolers() {
   const [products, setProducts] = useState([]);
@@ -53,57 +63,87 @@ export default function Coolers() {
             {products.length === 0 ? (
               <p className={styles.coolersEmpty}>No coolers yet.</p>
             ) : (
-              products.map((p) => (
-                <article key={p.id} className={styles.coolerCard}>
-                  <div className={styles.coolerCardImage}>
-                    <img
-                      src={p.images?.[0] || "/placeholder.svg?height=400&width=400"}
-                      alt={p.name}
-                      loading="lazy"
-                    />
-                  </div>
+              products.map((p) => {
+                const original = Number(p.originalPrice ?? p.price ?? 0);
+                const price = Number(p.price ?? 0);
 
-                  <div className={styles.coolerCardBody}>
-                    <h3 className={styles.coolerCardTitle}>{p.name}</h3>
-                    <p className={styles.coolerCardSubtitle}>
-                      Coolers, {p.brand}
-                    </p>
+                const hasDiscount =
+                  Number.isFinite(original) &&
+                  Number.isFinite(price) &&
+                  original > price;
 
-                    {p.colors?.length > 0 && (
-                      <div
-                        className={styles.coolerCardSwatches}
-                        aria-label="Available colors"
-                      >
-                        {p.colors.slice(0, 5).map((c, i) => (
-                          <span
-                            key={i}
-                            className={styles.coolerCardSwatch}
-                            style={{ backgroundColor: c }}
-                            title={c}
-                          />
-                        ))}
-                      </div>
-                    )}
+                const discountPct =
+                  hasDiscount && original > 0
+                    ? Math.round(((original - price) / original) * 100)
+                    : 0;
 
-                    <div className={styles.coolerCardPriceRow}>
-                      {p.originalPrice && p.originalPrice > p.price ? (
-                        <>
-                          <span className={styles.coolerCardPriceOld}>
-                            Rs.{p.originalPrice.toLocaleString("en-LK")}
+                const discountLabel = hasDiscount ? `${discountPct}% OFF` : "";
+
+                return (
+                  <article key={p.id} className={styles.coolerCard}>
+                    <div className={styles.coolerCardImage}>
+                      {/* ✅ Discount badge */}
+                      {hasDiscount && (
+                        <div className={styles.badges}>
+                          <span className={styles.badgeOff}>
+                            {discountLabel}
                           </span>
-                          <span className={styles.coolerCardPrice}>
-                            Rs.{p.price.toLocaleString("en-LK")}
-                          </span>
-                        </>
-                      ) : (
-                        <span className={styles.coolerCardPrice}>
-                          Rs.{p.price.toLocaleString("en-LK")}
-                        </span>
+                        </div>
                       )}
+
+                      <img
+                        src={
+                          p.images?.[0] ||
+                          "/placeholder.svg?height=400&width=400"
+                        }
+                        alt={p.name}
+                        loading="lazy"
+                      />
                     </div>
-                  </div>
-                </article>
-              ))
+
+                    <div className={styles.coolerCardBody}>
+                      <h3 className={styles.coolerCardTitle}>{p.name}</h3>
+                      <p className={styles.coolerCardSubtitle}>
+                        Coolers, {p.brand}
+                      </p>
+
+                      {p.colors?.length > 0 && (
+                        <div
+                          className={styles.coolerCardSwatches}
+                          aria-label="Available colors"
+                        >
+                          {p.colors.slice(0, 5).map((c, i) => (
+                            <span
+                              key={i}
+                              className={styles.coolerCardSwatch}
+                              style={{ backgroundColor: c }}
+                              title={c}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* ✅ Old + New price */}
+                      <div className={styles.coolerCardPriceRow}>
+                        {hasDiscount ? (
+                          <>
+                            <span className={styles.coolerCardPriceOld}>
+                              {formatRs(original)}
+                            </span>
+                            <span className={styles.coolerCardPrice}>
+                              {formatRs(price)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className={styles.coolerCardPrice}>
+                            {formatRs(price)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })
             )}
           </div>
         )}

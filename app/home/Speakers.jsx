@@ -1,9 +1,19 @@
-// src/app/home/Speakers.jsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import styles from "./Speakers.module.css";
 import { fetchSpeakerBrands, fetchSpeakers } from "@/lib/catalog";
+
+function formatRs(n) {
+  const num = Number(n || 0);
+  return (
+    "Rs." +
+    num.toLocaleString("en-LK", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })
+  );
+}
 
 export default function Speakers() {
   const [brands, setBrands] = useState([]);
@@ -32,7 +42,6 @@ export default function Speakers() {
         setBrands(brandData);
         setProducts(productData);
 
-        // auto-select first brand (e.g. JBL)
         if (brandData.length > 0) {
           setActiveBrand(brandData[0]);
         }
@@ -50,7 +59,7 @@ export default function Speakers() {
     };
   }, []);
 
-  // ⬇️ UPDATED: filter by brand NAME, not brandId
+  // filter by brand NAME
   const filtered = useMemo(() => {
     if (!activeBrand) return products;
 
@@ -66,12 +75,10 @@ export default function Speakers() {
   return (
     <section className={styles.speakersSection}>
       <div className={styles.inner}>
-        {/* Title row */}
         <header className={styles.speakersHeader}>
           <h2 className={styles.speakersTitle}>Portable Speakers</h2>
         </header>
 
-        {/* Brand navbar like JBL / MARSHALL / BASEUS / … */}
         {brands.length > 0 && (
           <nav className={styles.speakersTabs} aria-label="Speaker brands">
             {brands.map((brand) => {
@@ -105,61 +112,87 @@ export default function Speakers() {
                 No speakers for {activeName} yet.
               </p>
             ) : (
-              filtered.map((p) => (
-                <article key={p.id} className={styles.speakerCard}>
-                  {/* Image */}
-                  <div className={styles.speakerCardImage}>
-                    <img
-                      src={p.images?.[0] || "/placeholder.svg?height=400&width=400"}
-                      alt={p.name}
-                      loading="lazy"
-                    />
-                  </div>
+              filtered.map((p) => {
+                const original = Number(p.originalPrice ?? p.price ?? 0);
+                const price = Number(p.price ?? 0);
 
-                  {/* Text + details */}
-                  <div className={styles.speakerCardBody}>
-                    <h3 className={styles.speakerCardTitle}>{p.name}</h3>
-                    <p className={styles.speakerCardSubtitle}>
-                      Portable Speakers, {p.brand}, Sounds
-                    </p>
+                const hasDiscount =
+                  Number.isFinite(original) &&
+                  Number.isFinite(price) &&
+                  original > price;
 
-                    {/* Color dots */}
-                    {p.colors?.length > 0 && (
-                      <div
-                        className={styles.speakerCardSwatches}
-                        aria-label="Available colors"
-                      >
-                        {p.colors.slice(0, 5).map((c, i) => (
-                          <span
-                            key={i}
-                            className={styles.speakerCardSwatch}
-                            style={{ backgroundColor: c }}
-                            title={c}
-                          />
-                        ))}
-                      </div>
-                    )}
+                const discountPct =
+                  hasDiscount && original > 0
+                    ? Math.round(((original - price) / original) * 100)
+                    : 0;
 
-                    {/* Price row (old + new) */}
-                    <div className={styles.speakerCardPriceRow}>
-                      {p.originalPrice && p.originalPrice > p.price ? (
-                        <>
-                          <span className={styles.speakerCardPriceOld}>
-                            Rs.{p.originalPrice.toLocaleString("en-LK")}
+                const discountLabel = hasDiscount ? `${discountPct}% OFF` : "";
+
+                return (
+                  <article key={p.id} className={styles.speakerCard}>
+                    <div className={styles.speakerCardImage}>
+                      {/* ✅ Discount badge */}
+                      {hasDiscount && (
+                        <div className={styles.badges}>
+                          <span className={styles.badgeOff}>
+                            {discountLabel}
                           </span>
-                          <span className={styles.speakerCardPrice}>
-                            Rs.{p.price.toLocaleString("en-LK")}
-                          </span>
-                        </>
-                      ) : (
-                        <span className={styles.speakerCardPrice}>
-                          Rs.{p.price.toLocaleString("en-LK")}
-                        </span>
+                        </div>
                       )}
+
+                      <img
+                        src={
+                          p.images?.[0] ||
+                          "/placeholder.svg?height=400&width=400"
+                        }
+                        alt={p.name}
+                        loading="lazy"
+                      />
                     </div>
-                  </div>
-                </article>
-              ))
+
+                    <div className={styles.speakerCardBody}>
+                      <h3 className={styles.speakerCardTitle}>{p.name}</h3>
+                      <p className={styles.speakerCardSubtitle}>
+                        Portable Speakers, {p.brand}, Sounds
+                      </p>
+
+                      {p.colors?.length > 0 && (
+                        <div
+                          className={styles.speakerCardSwatches}
+                          aria-label="Available colors"
+                        >
+                          {p.colors.slice(0, 5).map((c, i) => (
+                            <span
+                              key={i}
+                              className={styles.speakerCardSwatch}
+                              style={{ backgroundColor: c }}
+                              title={c}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* ✅ Old + New price */}
+                      <div className={styles.speakerCardPriceRow}>
+                        {hasDiscount ? (
+                          <>
+                            <span className={styles.speakerCardPriceOld}>
+                              {formatRs(original)}
+                            </span>
+                            <span className={styles.speakerCardPrice}>
+                              {formatRs(price)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className={styles.speakerCardPrice}>
+                            {formatRs(price)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })
             )}
           </div>
         )}

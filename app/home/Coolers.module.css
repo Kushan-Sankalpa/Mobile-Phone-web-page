@@ -64,7 +64,9 @@
   border-color: rgba(255, 255, 255, 0.16);
 }
 
+/* ✅ make relative for badge */
 .coolerCardImage {
+  position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   background: rgba(0, 0, 0, 0.15);
@@ -73,8 +75,30 @@
 .coolerCardImage img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* ✅ nicer than cover for product */
   display: block;
+}
+
+/* ✅ Discount badge */
+.badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.badgeOff {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .coolerCardBody {
@@ -108,8 +132,9 @@
 
 .coolerCardPriceRow {
   display: flex;
-  gap: 8px;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
 }
 
 .coolerCardPriceOld {

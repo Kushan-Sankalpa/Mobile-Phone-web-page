@@ -261,3 +261,51 @@
   font-weight: 800;
   color: var(--foreground, #111);
 }
+
+
+/* ✅ Discount badge (top-left on image) */
+.badges {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 6; /* above image */
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  pointer-events: none;
+}
+
+.badgeOff {
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ✅ Price stack */
+.priceWrap {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.oldPrice {
+  font-weight: 700;
+  color: #6b7280;
+  text-decoration: line-through;
+  font-size: 0.95rem;
+}
+
+.newPrice {
+  font-weight: 900;
+  color: var(--foreground, #111);
+  font-size: 1.1rem;
+}
+
+/* ✅ Keep actions above badge if needed */
+.actions {
+  z-index: 7;
+}
