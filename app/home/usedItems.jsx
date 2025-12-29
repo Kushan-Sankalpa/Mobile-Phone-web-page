@@ -40,7 +40,6 @@ export default function UsedItems() {
     };
   }, []);
 
-  // Extra safety: ensure only used deviceStatus
   const list = items.filter((p) => {
     const status = (p.deviceStatus || "").toLowerCase().trim();
     return status === "used";
@@ -61,15 +60,33 @@ export default function UsedItems() {
       ) : (
         <div className={styles.grid}>
           {list.map((p) => {
-            const img =
-              p.images?.[0] || "/placeholder.svg?height=400&width=400";
+            const img = p.images?.[0] || "/placeholder.svg?height=400&width=400";
 
             const brand = p.brand || "Unknown";
             const cat = p.categoryType || "Device";
 
+            const original = Number(p.originalPrice ?? p.price ?? 0);
+            const price = Number(p.price ?? 0);
+
+            // ✅ discount detection WITHOUT relying on offerType
+            const hasDiscount = Number.isFinite(original) && Number.isFinite(price) && original > price;
+
+            const discountPct =
+              hasDiscount && original > 0
+                ? Math.round(((original - price) / original) * 100)
+                : 0;
+
+            const discountLabel = hasDiscount ? `${discountPct}% OFF` : "";
+
             return (
               <article key={p.id} className={styles.card}>
                 <div className={styles.media}>
+                  {hasDiscount && (
+                    <div className={styles.badges}>
+                      <span className={styles.badgeOff}>{discountLabel}</span>
+                    </div>
+                  )}
+
                   <img
                     src={img}
                     alt={p.name}
@@ -83,7 +100,13 @@ export default function UsedItems() {
                   <p className={styles.sub}>
                     {brand} • {cat} • Used
                   </p>
-                  <div className={styles.price}>{formatRs(p.price)}</div>
+
+                  <div className={styles.priceWrap}>
+                    {hasDiscount && (
+                      <div className={styles.oldPrice}>{formatRs(original)}</div>
+                    )}
+                    <div className={styles.newPrice}>{formatRs(price)}</div>
+                  </div>
                 </div>
               </article>
             );

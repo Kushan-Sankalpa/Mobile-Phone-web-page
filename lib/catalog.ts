@@ -176,26 +176,36 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
   if (Array.isArray(item.galleryImageUrls)) {
     images.push(...item.galleryImageUrls.map((u) => `${ASSET_BASE}${u}`));
   }
-  if (images.length === 0) {
-    images.push("/placeholder.svg?height=400&width=400");
-  }
+  if (images.length === 0) images.push("/placeholder.svg?height=400&width=400");
 
-  const rawPrice = item.price ?? 0;
+  const rawPrice = Number(item.price ?? 0);
   let finalPrice = rawPrice;
+
+  // ✅ normalize discount fields
+  const dtype = String(item.discountType ?? "").trim().toLowerCase();
+  const dval =
+    item.discountValue === undefined || item.discountValue === null
+      ? null
+      : Number(item.discountValue);
+
   let offerType: "percent" | "amount" | null = null;
   let offerValue = 0;
 
-  if (item.discountType === "percent" && item.discountValue) {
+  // ✅ percent discount
+  if (dtype === "percent" && dval !== null && Number.isFinite(dval) && dval > 0) {
     offerType = "percent";
-    offerValue = item.discountValue;
-    finalPrice = rawPrice * (1 - item.discountValue / 100);
-  } else if (item.discountType === "amount" && item.discountValue) {
-    offerType = "amount";
-    offerValue = item.discountValue;
-    finalPrice = rawPrice - item.discountValue;
+    offerValue = dval;
+    finalPrice = rawPrice * (1 - dval / 100);
   }
 
-  if (finalPrice < 0) finalPrice = 0;
+  // ✅ (optional) keep amount support if you still use it
+  else if (dtype === "amount" && dval !== null && Number.isFinite(dval) && dval > 0) {
+    offerType = "amount";
+    offerValue = dval;
+    finalPrice = rawPrice - dval;
+  }
+
+  if (!Number.isFinite(finalPrice) || finalPrice < 0) finalPrice = 0;
 
   return {
     id: item._id,
@@ -205,14 +215,15 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
     price: finalPrice,
     specs,
     images,
-    originalPrice: rawPrice,
-    offerType,
-    offerValue,
+    originalPrice: rawPrice,      // ✅ always keep original
+    offerType,                    // ✅ normalized
+    offerValue,                   // ✅ normalized number
     colors: item.colors ?? [],
     categoryType: item.categoryType,
     deviceStatus: item.deviceStatus,
   };
 }
+
 
 /** Apple-specific helper (still used by AppleProducts) */
 export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
