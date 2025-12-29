@@ -197,7 +197,7 @@ const isActive = (href?: string) => {
 
   const navItems: NavItem[] = [
     { label: "Home", href: "/home" },
-    { label: "Apple", items: appleDropdown },
+    { label: "Apple", href: "/apple", items: appleDropdown },
     { label: "Android", items: androidDropdown },
     { label: "Pre-Owned", items: preOwnedDropdown },
     { label: "Speakers", items: speakersDropdown },
@@ -295,23 +295,25 @@ const isActive = (href?: string) => {
                     onMouseEnter={() => handleDropdownEnter(item.label)}
                     onMouseLeave={handleDropdownLeave}
                   >
-                    <button
-                      type="button"
-                      className={cx(
-                        "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-300",
-                        "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
-                        (isOpenDrop || isHovering) &&
-                          "active text-[hsl(var(--navbar-hover))]"
-                      )}
-                      aria-haspopup="menu"
-                      aria-expanded={isOpenDrop}
-                    >
-                      {item.label}
-                      <ChevronDown
-                        size={14}
-                        className={cx("chevron", isOpenDrop && "open")}
-                      />
-                    </button>
+                  <button
+  type="button"
+  onClick={() => {
+    if (item.href) router.push(item.href);
+    setOpenDesktopDropdown(null);
+    setHoverDesktop(null);
+  }}
+  className={cx(
+    "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-300",
+    "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
+    (isOpenDrop || isHovering) && "active text-[hsl(var(--navbar-hover))]"
+  )}
+  aria-haspopup="menu"
+  aria-expanded={isOpenDrop}
+>
+  {item.label}
+  <ChevronDown size={14} className={cx("chevron", isOpenDrop && "open")} />
+</button>
+
 
                     {/* Dropdown Menu */}
                     <div
@@ -339,7 +341,23 @@ const isActive = (href?: string) => {
                             >
                               {sub.label}
                             </Link>
+
+                            
                           ))}
+                          {/* {item.href && (
+  <Link
+    href={item.href}
+    role="menuitem"
+    className="dropdown-item block px-4 py-2.5 text-sm font-semibold transition-all duration-200 text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
+    onClick={() => {
+      setOpenDesktopDropdown(null);
+      setHoverDesktop(null);
+    }}
+  >
+    View All {item.label}
+  </Link>
+)} */}
+
 
                           {brandErr && (
                             <div className="px-4 pt-2 text-xs text-red-300">
