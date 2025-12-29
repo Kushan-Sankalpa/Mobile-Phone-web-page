@@ -39,15 +39,12 @@ function colorCandidates(item) {
   if (Array.isArray(fromApi) && fromApi.length) {
     return fromApi.slice(0, 6);
   }
+
   // Fallback palette
-  return [
-    "#1f2937",
-    "#e5e7eb",
-    "#f59e0b",
-    "#10b981",
-    "#3b82f6",
-    "#94a3b8",
-  ].slice(0, 4);
+  return ["#1f2937", "#e5e7eb", "#f59e0b", "#10b981", "#3b82f6", "#94a3b8"].slice(
+    0,
+    4
+  );
 }
 
 export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
@@ -58,6 +55,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
 
   useEffect(() => {
     let alive = true;
+
     (async () => {
       try {
         setLoading(true);
@@ -69,6 +67,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
         if (alive) setLoading(false);
       }
     })();
+
     return () => {
       alive = false;
     };
@@ -82,8 +81,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
   const list = useMemo(() => {
     return limited.filter((p) => {
       const brandOk = (p.brand || "").toLowerCase().trim() === "apple";
-      const statusOk =
-        (p.deviceStatus || "").toLowerCase().trim() === "not used";
+      const statusOk = (p.deviceStatus || "").toLowerCase().trim() === "not used";
       return brandOk && statusOk;
     });
   }, [limited]);
@@ -117,6 +115,15 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
             const device = deviceTypeFromName(p.name || p.model);
             const colors = colorCandidates(p);
 
+            const hasDiscount =
+              p.offerType === "percent" &&
+              Number(p.offerValue) > 0 &&
+              Number(p.originalPrice) > Number(p.price);
+
+            const discountLabel = hasDiscount
+              ? `${Math.round(Number(p.offerValue))}% OFF`
+              : "";
+
             const categoryLabel = p.categoryType || device;
             const statusLabel =
               p.deviceStatus &&
@@ -125,12 +132,20 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
             return (
               <article key={p.id} className={styles.card}>
                 <div className={styles.media}>
+                  {/* ✅ Badge MUST be inside .media (because .media is position:relative) */}
+                  {hasDiscount && (
+                    <div className={styles.badges}>
+                      <span className={styles.badgeOff}>{discountLabel}</span>
+                    </div>
+                  )}
+
                   <img
                     src={img}
                     alt={p.name}
                     className={styles.image}
                     loading="lazy"
                   />
+
                   <div className={styles.actions}>
                     <button
                       type="button"
@@ -140,6 +155,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                     >
                       <ShoppingCart size={18} />
                     </button>
+
                     <button
                       type="button"
                       className={styles.iconBtn}
@@ -148,6 +164,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                     >
                       <Search size={18} />
                     </button>
+
                     <button
                       type="button"
                       className={styles.iconBtn}
@@ -162,17 +179,12 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                 <div className={styles.body}>
                   <h3 className={styles.name}>{p.name}</h3>
 
-                  {/* Show brand + categoryType + deviceStatus */}
                   <p className={styles.sub}>
-                    {p.brand || "Apple"},{" "}
-                    {categoryLabel || device}
+                    {p.brand || "Apple"}, {categoryLabel || device}
                     {statusLabel ? ` • ${statusLabel}` : ""}
                   </p>
 
-                  <div
-                    className={styles.swatches}
-                    aria-label="Available colors"
-                  >
+                  <div className={styles.swatches} aria-label="Available colors">
                     {colors.map((c, i) => (
                       <span
                         key={i}
@@ -184,7 +196,14 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                     ))}
                   </div>
 
-                  <div className={styles.price}>{formatRs(p.price)}</div>
+                  <div className={styles.priceWrap}>
+                    {hasDiscount && (
+                      <div className={styles.oldPrice}>
+                        {formatRs(p.originalPrice)}
+                      </div>
+                    )}
+                    <div className={styles.newPrice}>{formatRs(p.price)}</div>
+                  </div>
                 </div>
               </article>
             );
