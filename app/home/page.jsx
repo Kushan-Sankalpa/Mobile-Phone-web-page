@@ -11,6 +11,8 @@ import JblVedio from "./jblvedio";
 import UsedItems from "./usedItems";
 import AppleCategories from "./apple-categories";
 
+import Coolers from "./Coolers";
+
 
 
 
@@ -34,6 +36,8 @@ export default function HomePage() {
 
         
         <Speakers />
+
+        <Coolers />
       </main>
       <Footer />
     </div>

@@ -77,6 +77,32 @@ type AdminSpeakerItem = {
   status?: string;
 };
 
+
+type AdminCoolerItem = {
+  _id: string;
+  brand: string; // brand name e.g. "Igloo"
+  categoryType?: string;
+  model: string;
+  price: number;
+
+  discountType?: "percent" | "amount" | null;
+  discountValue?: number | null;
+
+  colors?: string[];
+  mainImageUrl?: string;
+  galleryImageUrls?: string[];
+
+  shortDescription?: string;
+  longDescription?: string;
+
+  inStock?: boolean;
+  status?: string;
+
+  warrantyType?: string;
+  warrantyPeriod?: string;
+};
+
+
 function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
   const images: string[] = [];
 
@@ -339,3 +365,80 @@ export async function fetchSpeakers(): Promise<StorefrontProduct[]> {
   const items: AdminSpeakerItem[] = data?.items ?? [];
   return items.map(mapSpeakerToStorefront);
 }
+
+function mapCoolerToStorefront(item: AdminCoolerItem): StorefrontProduct {
+  const images: string[] = [];
+
+  if (item.mainImageUrl) images.push(`${ASSET_BASE}${item.mainImageUrl}`);
+  if (Array.isArray(item.galleryImageUrls)) {
+    images.push(...item.galleryImageUrls.map((u) => `${ASSET_BASE}${u}`));
+  }
+  if (images.length === 0) images.push("/placeholder.svg?height=400&width=400");
+
+  const rawPrice = item.price ?? 0;
+  let finalPrice = rawPrice;
+
+  let offerType: "percent" | "amount" | null = null;
+  let offerValue = 0;
+
+  if (item.discountType === "percent" && item.discountValue) {
+    offerType = "percent";
+    offerValue = item.discountValue;
+    finalPrice = rawPrice * (1 - item.discountValue / 100);
+  } else if (item.discountType === "amount" && item.discountValue) {
+    offerType = "amount";
+    offerValue = item.discountValue;
+    finalPrice = rawPrice - item.discountValue;
+  }
+
+  if (finalPrice < 0) finalPrice = 0;
+
+  const specs: string[] = [];
+  if (item.shortDescription) specs.push(item.shortDescription);
+  if (item.longDescription) specs.push(item.longDescription);
+  if (item.warrantyType || item.warrantyPeriod) {
+    specs.push(
+      [item.warrantyType, item.warrantyPeriod].filter(Boolean).join(" ")
+    );
+  }
+
+  return {
+    id: item._id,
+    brand: item.brand,
+    name: item.model,
+    model: item.model,
+    price: finalPrice,
+    specs,
+    images,
+    originalPrice: rawPrice,
+    offerType,
+    offerValue,
+    colors: item.colors ?? [],
+    categoryType: item.categoryType,
+  };
+}
+
+// All active coolers (BrandNewCooler)
+export async function fetchCoolers(): Promise<StorefrontProduct[]> {
+  const params = new URLSearchParams({
+    status: "Active",
+    inStock: "true",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    limit: "200",
+    page: "1",
+  });
+
+  // IMPORTANT:
+  // This assumes your backend route is GET /coolers
+  // If your route is different, change "coolers" here.
+  const url = `${API}/coolers?${params.toString()}`;
+
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Coolers fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const items: AdminCoolerItem[] = data?.items ?? [];
+  return items.map(mapCoolerToStorefront);
+}
+
