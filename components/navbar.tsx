@@ -148,12 +148,15 @@ export default function Navbar() {
       a.name.localeCompare(b.name)
     );
   }, [androidBrands, speakerBrands]);
+const isActive = (href?: string) => {
+  if (!href) return false;
 
-  const isActive = (href?: string) => {
-    if (!href) return false;
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
-  };
+  // Home should be active ONLY on "/"
+  if (href === "/") return pathname === "/";
+
+  return pathname.startsWith(href);
+};
+
 
   // Dropdown link definitions
   const appleDropdown = [
@@ -193,7 +196,7 @@ export default function Navbar() {
   }));
 
   const navItems: NavItem[] = [
-    { label: "Home", href: "/" },
+    { label: "Home", href: "/home" },
     { label: "Apple", items: appleDropdown },
     { label: "Android", items: androidDropdown },
     { label: "Pre-Owned", items: preOwnedDropdown },
