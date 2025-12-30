@@ -453,3 +453,76 @@ export async function fetchCoolers(): Promise<StorefrontProduct[]> {
   return items.map(mapCoolerToStorefront);
 }
 
+
+export async function fetchAndroidPhones(): Promise<StorefrontProduct[]> {
+  // fetch all phones except Apple (Active + inStock)
+  const params = new URLSearchParams({
+    status: "Active",
+    inStock: "true",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    limit: "200",
+  });
+
+  const url = `${API}/phones?${params.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Android catalog fetch failed: ${res.status}`);
+
+  const data = await res.json();
+  const items: AdminAppleItem[] = data?.items ?? [];
+
+  // filter out Apple client-side (extra safety)
+  const androidOnly = items.filter(
+    (p) => String(p?.brand || "").toLowerCase().trim() !== "apple"
+  );
+
+  return androidOnly.map(mapDeviceToStorefront);
+}
+function normCat(v: any) {
+  return String(v ?? "").trim().toLowerCase();
+}
+
+// Match item.categoryType against a list of allowed names (case-insensitive)
+function categoryIn(item: StorefrontProduct, allowed: string[]) {
+  const c = normCat(item.categoryType);
+  return allowed.some((x) => normCat(x) === c);
+}
+
+/**
+ * Fetch ALL used items and filter by categoryType locally (case-insensitive).
+ * This works even if backend doesn't support category filter.
+ */
+export async function fetchUsedItemsByCategoryTypes(
+  allowedCategoryTypes: string[]
+): Promise<StorefrontProduct[]> {
+  const all = await fetchUsedItems();
+  return (all || []).filter((p) => categoryIn(p, allowedCategoryTypes));
+}
+
+/**
+ * Fetch ALL used items but keep only Apple brand (used Apple)
+ * (helpful for iPhone/iPad/Mac/Watch/AirPods used pages)
+ */
+export async function fetchUsedAppleItemsByCategoryTypes(
+  allowedCategoryTypes: string[]
+): Promise<StorefrontProduct[]> {
+  const all = await fetchUsedItems();
+  const appleOnly = (all || []).filter(
+    (p) => String(p.brand || "").trim().toLowerCase() === "apple"
+  );
+  return appleOnly.filter((p) => categoryIn(p, allowedCategoryTypes));
+}
+
+/**
+ * Fetch ALL used items but keep only NON-Apple brand (used Android side)
+ */
+export async function fetchUsedAndroidItemsByCategoryTypes(
+  allowedCategoryTypes: string[]
+): Promise<StorefrontProduct[]> {
+  const all = await fetchUsedItems();
+  const androidOnly = (all || []).filter(
+    (p) => String(p.brand || "").trim().toLowerCase() !== "apple"
+  );
+  return androidOnly.filter((p) => categoryIn(p, allowedCategoryTypes));
+}
+

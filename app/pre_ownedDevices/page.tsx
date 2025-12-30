@@ -3,17 +3,17 @@
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import AndroidDevices from "./partials/android-devices";
+import PreOwnedDevices from "./partials/preowned_devices";
 
-export default function AndroidPage() {
+export default function PreOwnedDevicesPage() {
   const sp = useSearchParams();
-  const brand = sp.get("brand") || "";
+  const type = sp.get("type") || ""; // iphone | ipad | macbook | apple-watch | airpods | android-phone | android-watch | android-tablet
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="pt-16">
-        <AndroidDevices title="Android Phones" brand={brand} />
+        <PreOwnedDevices type={type} />
       </main>
       <Footer />
     </div>

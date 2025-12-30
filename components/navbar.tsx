@@ -148,15 +148,12 @@ export default function Navbar() {
       a.name.localeCompare(b.name)
     );
   }, [androidBrands, speakerBrands]);
-const isActive = (href?: string) => {
-  if (!href) return false;
 
-  // Home should be active ONLY on "/"
-  if (href === "/") return pathname === "/";
-
-  return pathname.startsWith(href);
-};
-
+  const isActive = (href?: string) => {
+    if (!href) return false;
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   // Dropdown link definitions
   const appleDropdown = [
@@ -169,16 +166,16 @@ const isActive = (href?: string) => {
     { label: "Accessories", href: "/accessories?brand=Apple" },
   ];
 
-  const preOwnedDropdown = [
-    { label: "Pre-Owned iPhone", href: "/pre-owned?type=iphone" },
-    { label: "Pre-Owned iPads", href: "/pre-owned?type=ipad" },
-    { label: "Pre-Owned MacBooks", href: "/pre-owned?type=macbook" },
-    { label: "Pre-Owned Apple Watches", href: "/pre-owned?type=apple-watch" },
-    { label: "Pre-Owned AirPods", href: "/pre-owned?type=airpods" },
-    { label: "Pre-Owned Android Phones", href: "/pre-owned?type=android-phone" },
-    { label: "Pre-Owned Android Watches", href: "/pre-owned?type=android-watch" },
-    { label: "Pre-Owned Android Tablets", href: "/pre-owned?type=android-tablet" },
-  ];
+const preOwnedDropdown = [
+  { label: "Pre-Owned iPhone", href: "/pre_ownedDevices?type=iphone" },
+  { label: "Pre-Owned iPads", href: "/pre_ownedDevices?type=ipad" },
+  { label: "Pre-Owned MacBooks", href: "/pre_ownedDevices?type=macbook" },
+  { label: "Pre-Owned Apple Watches", href: "/pre_ownedDevices?type=apple-watch" },
+  { label: "Pre-Owned AirPods", href: "/pre_ownedDevices?type=airpods" },
+  { label: "Pre-Owned Android Phones", href: "/pre_ownedDevices?type=android-phone" },
+  { label: "Pre-Owned Android Watches", href: "/pre_ownedDevices?type=android-watch" },
+  { label: "Pre-Owned Android Tablets", href: "/pre_ownedDevices?type=android-tablet" },
+];
 
   const androidDropdown = androidBrands.map((b) => ({
     label: b.name,
@@ -198,8 +195,9 @@ const isActive = (href?: string) => {
   const navItems: NavItem[] = [
     { label: "Home", href: "/home" },
     { label: "Apple", href: "/apple", items: appleDropdown },
-    { label: "Android", items: androidDropdown },
-    { label: "Pre-Owned", items: preOwnedDropdown },
+    { label: "Android", href: "/android", items: androidDropdown },
+   { label: "Pre-Owned", href: "/pre_ownedDevices", items: preOwnedDropdown },
+
     { label: "Speakers", items: speakersDropdown },
     { label: "Accessories", items: accessoriesDropdown },
   ];
@@ -252,7 +250,7 @@ const isActive = (href?: string) => {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-lg px-2 py-1"
+              className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-lg px-2 py-1 cursor-pointer"
             >
               <div className="w-9 h-9 bg-[hsl(var(--navbar-text))] rounded-full flex items-center justify-center text-[hsl(var(--navbar-bg))] text-sm font-bold transition-transform duration-300 group-hover:scale-110">
                 P
@@ -275,7 +273,7 @@ const isActive = (href?: string) => {
                       key={item.label}
                       href={item.href || "#"}
                       className={cx(
-                        "nav-link px-4 py-2 text-sm font-medium transition-all duration-300",
+                        "nav-link px-4 py-2 text-sm font-medium transition-all duration-300 cursor-pointer",
                         "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
                         active && "active text-[hsl(var(--navbar-hover))]"
                       )}
@@ -295,25 +293,28 @@ const isActive = (href?: string) => {
                     onMouseEnter={() => handleDropdownEnter(item.label)}
                     onMouseLeave={handleDropdownLeave}
                   >
-                  <button
-  type="button"
-  onClick={() => {
-    if (item.href) router.push(item.href);
-    setOpenDesktopDropdown(null);
-    setHoverDesktop(null);
-  }}
-  className={cx(
-    "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-300",
-    "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
-    (isOpenDrop || isHovering) && "active text-[hsl(var(--navbar-hover))]"
-  )}
-  aria-haspopup="menu"
-  aria-expanded={isOpenDrop}
->
-  {item.label}
-  <ChevronDown size={14} className={cx("chevron", isOpenDrop && "open")} />
-</button>
-
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (item.href) router.push(item.href);
+                        setOpenDesktopDropdown(null);
+                        setHoverDesktop(null);
+                      }}
+                      className={cx(
+                        "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-300 cursor-pointer",
+                        "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
+                        (isOpenDrop || isHovering) &&
+                          "active text-[hsl(var(--navbar-hover))]"
+                      )}
+                      aria-haspopup="menu"
+                      aria-expanded={isOpenDrop}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        size={14}
+                        className={cx("chevron", isOpenDrop && "open")}
+                      />
+                    </button>
 
                     {/* Dropdown Menu */}
                     <div
@@ -327,12 +328,27 @@ const isActive = (href?: string) => {
                     >
                       <div className="w-56 rounded-xl border border-[hsl(var(--navbar-dropdown-border))] bg-[hsl(var(--navbar-dropdown-bg))] shadow-2xl overflow-hidden">
                         <div className="max-h-[60vh] overflow-auto py-2">
+                          {/* View all */}
+                          {item.href && (
+                            <Link
+                              href={item.href}
+                              role="menuitem"
+                              className="dropdown-item block px-4 py-2.5 text-sm font-semibold transition-all duration-200 text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] cursor-pointer"
+                              onClick={() => {
+                                setOpenDesktopDropdown(null);
+                                setHoverDesktop(null);
+                              }}
+                            >
+                              View All {item.label}
+                            </Link>
+                          )}
+
                           {item.items!.map((sub, idx) => (
                             <Link
                               key={sub.href}
                               href={sub.href}
                               role="menuitem"
-                              className="dropdown-item block px-4 py-2.5 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] hover:pl-5"
+                              className="dropdown-item block px-4 py-2.5 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] hover:pl-5 cursor-pointer"
                               style={{ animationDelay: `${idx * 30}ms` }}
                               onClick={() => {
                                 setOpenDesktopDropdown(null);
@@ -341,23 +357,7 @@ const isActive = (href?: string) => {
                             >
                               {sub.label}
                             </Link>
-
-                            
                           ))}
-                          {/* {item.href && (
-  <Link
-    href={item.href}
-    role="menuitem"
-    className="dropdown-item block px-4 py-2.5 text-sm font-semibold transition-all duration-200 text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
-    onClick={() => {
-      setOpenDesktopDropdown(null);
-      setHoverDesktop(null);
-    }}
-  >
-    View All {item.label}
-  </Link>
-)} */}
-
 
                           {brandErr && (
                             <div className="px-4 pt-2 text-xs text-red-300">
@@ -379,7 +379,7 @@ const isActive = (href?: string) => {
                 <button
                   type="button"
                   onClick={searchOpen ? () => setSearchOpen(false) : openSearch}
-                  className="icon-btn p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                  className="icon-btn p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
                   aria-label={searchOpen ? "Close search" : "Open search"}
                 >
                   {searchOpen ? <X size={20} /> : <Search size={20} />}
@@ -411,7 +411,7 @@ const isActive = (href?: string) => {
               {/* Cart */}
               <Link
                 href="/cart"
-                className="icon-btn relative p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                className="icon-btn relative p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
                 aria-label={`Shopping cart with ${items.length} items`}
               >
                 <ShoppingCart size={20} />
@@ -422,11 +422,11 @@ const isActive = (href?: string) => {
                 )}
               </Link>
 
-              {/* Mobile Menu Toggle (same animation style) */}
+              {/* Mobile Menu Toggle */}
               <button
                 type="button"
                 onClick={() => setIsOpen((v) => !v)}
-                className="icon-btn md:hidden p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                className="icon-btn md:hidden p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
                 aria-label="Toggle menu"
                 aria-expanded={isOpen}
               >
@@ -462,33 +462,6 @@ const isActive = (href?: string) => {
             )}
           >
             <div className="py-4">
-              {/* Mobile Search */}
-              <div className="px-4 pb-4">
-                <div className="flex items-center gap-2 bg-[hsl(var(--navbar-dropdown-bg))] border border-[hsl(var(--navbar-dropdown-border))] rounded-xl px-4 py-3">
-                  <Search
-                    size={18}
-                    className="text-[hsl(var(--navbar-text-muted))]"
-                  />
-                  <input
-                    value={searchQ}
-                    onChange={(e) => setSearchQ(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") submitSearch();
-                    }}
-                    placeholder="Search products..."
-                    className="flex-1 bg-transparent outline-none text-sm placeholder:text-[hsl(var(--navbar-text-muted))]"
-                    aria-label="Search products"
-                  />
-                  <button
-                    type="button"
-                    onClick={submitSearch}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-[hsl(var(--navbar-text))] text-[hsl(var(--navbar-bg))] font-semibold transition-transform duration-200 hover:scale-105 active:scale-95"
-                  >
-                    Go
-                  </button>
-                </div>
-              </div>
-
               {/* Mobile Nav Items */}
               <div className="space-y-1">
                 {navItems.map((item) => {
@@ -501,7 +474,7 @@ const isActive = (href?: string) => {
                         key={item.label}
                         href={item.href || "#"}
                         className={cx(
-                          "block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-lg mx-2",
+                          "block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-lg mx-2 cursor-pointer",
                           isActive(item.href)
                             ? "text-[hsl(var(--navbar-hover))] bg-[hsl(var(--navbar-dropdown-hover))]"
                             : "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
@@ -520,7 +493,7 @@ const isActive = (href?: string) => {
                       <button
                         type="button"
                         className={cx(
-                          "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300",
+                          "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer",
                           sectionOpen
                             ? "text-[hsl(var(--navbar-hover))] bg-[hsl(var(--navbar-dropdown-hover))]"
                             : "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
@@ -535,13 +508,29 @@ const isActive = (href?: string) => {
                         />
                       </button>
 
-                      <div className={cx("mobile-accordion", sectionOpen && "open")}>
+                      <div
+                        className={cx("mobile-accordion", sectionOpen && "open")}
+                      >
                         <div className="pt-1 pb-2 space-y-0.5">
+                          {/* View all */}
+                          {item.href && (
+                            <Link
+                              href={item.href}
+                              className="block px-6 py-2.5 text-sm font-semibold text-[hsl(var(--navbar-hover))] hover:pl-8 rounded-lg cursor-pointer"
+                              onClick={() => {
+                                setIsOpen(false);
+                                setOpenMobileSection(null);
+                              }}
+                            >
+                              View All {item.label}
+                            </Link>
+                          )}
+
                           {item.items!.map((sub) => (
                             <Link
                               key={sub.href}
                               href={sub.href}
-                              className="block px-6 py-2.5 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:pl-8 rounded-lg"
+                              className="block px-6 py-2.5 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:pl-8 rounded-lg cursor-pointer"
                               onClick={() => {
                                 setIsOpen(false);
                                 setOpenMobileSection(null);
@@ -567,10 +556,8 @@ const isActive = (href?: string) => {
         </div>
       </nav>
 
-      {/* Self-contained CSS (same behavior/animations as your example) */}
       <style jsx global>{`
         :root {
-          /* black-only theme */
           --navbar-bg: 0 0% 0%;
           --navbar-text: 0 0% 100%;
           --navbar-text-muted: 0 0% 68%;
@@ -581,7 +568,6 @@ const isActive = (href?: string) => {
           --navbar-dropdown-hover: 0 0% 12%;
         }
 
-        /* underline hover/active like example */
         .nav-link {
           position: relative;
           border-radius: 10px;
@@ -612,7 +598,6 @@ const isActive = (href?: string) => {
           transform: rotate(180deg);
         }
 
-        /* dropdown open/close animation */
         .dropdown-menu {
           opacity: 0;
           transform: translateY(10px);
@@ -625,7 +610,6 @@ const isActive = (href?: string) => {
           pointer-events: auto;
         }
 
-        /* dropdown item stagger animation */
         .dropdown-item {
           animation: dropdownItemIn 260ms ease both;
           opacity: 0;
@@ -638,7 +622,6 @@ const isActive = (href?: string) => {
           }
         }
 
-        /* icon button hover */
         .icon-btn:hover {
           background: hsl(var(--navbar-dropdown-hover));
           transform: translateY(-1px);
@@ -647,7 +630,6 @@ const isActive = (href?: string) => {
           transform: translateY(0);
         }
 
-        /* desktop search expand */
         .search-container {
           width: 0;
           overflow: hidden;
@@ -667,7 +649,6 @@ const isActive = (href?: string) => {
           }
         }
 
-        /* mobile menu animation */
         .mobile-menu {
           max-height: 0;
           opacity: 0;
@@ -679,13 +660,13 @@ const isActive = (href?: string) => {
           opacity: 1;
         }
 
-        /* mobile accordion */
         .mobile-accordion {
           max-height: 0;
           overflow: hidden;
           opacity: 0;
           transform: translateY(-4px);
-          transition: max-height 300ms ease, opacity 220ms ease, transform 220ms ease;
+          transition: max-height 300ms ease, opacity 220ms ease,
+            transform 220ms ease;
         }
         .mobile-accordion.open {
           max-height: 900px;
