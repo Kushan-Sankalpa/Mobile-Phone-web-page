@@ -1,3 +1,4 @@
+// src/components/navbar.tsx
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -166,16 +167,28 @@ export default function Navbar() {
     { label: "Accessories", href: "/accessories?brand=Apple" },
   ];
 
-const preOwnedDropdown = [
-  { label: "Pre-Owned iPhone", href: "/pre_ownedDevices?type=iphone" },
-  { label: "Pre-Owned iPads", href: "/pre_ownedDevices?type=ipad" },
-  { label: "Pre-Owned MacBooks", href: "/pre_ownedDevices?type=macbook" },
-  { label: "Pre-Owned Apple Watches", href: "/pre_ownedDevices?type=apple-watch" },
-  { label: "Pre-Owned AirPods", href: "/pre_ownedDevices?type=airpods" },
-  { label: "Pre-Owned Android Phones", href: "/pre_ownedDevices?type=android-phone" },
-  { label: "Pre-Owned Android Watches", href: "/pre_ownedDevices?type=android-watch" },
-  { label: "Pre-Owned Android Tablets", href: "/pre_ownedDevices?type=android-tablet" },
-];
+  const preOwnedDropdown = [
+    { label: "Pre-Owned iPhone", href: "/pre_ownedDevices?type=iphone" },
+    { label: "Pre-Owned iPads", href: "/pre_ownedDevices?type=ipad" },
+    { label: "Pre-Owned MacBooks", href: "/pre_ownedDevices?type=macbook" },
+    {
+      label: "Pre-Owned Apple Watches",
+      href: "/pre_ownedDevices?type=apple-watch",
+    },
+    { label: "Pre-Owned AirPods", href: "/pre_ownedDevices?type=airpods" },
+    {
+      label: "Pre-Owned Android Phones",
+      href: "/pre_ownedDevices?type=android-phone",
+    },
+    {
+      label: "Pre-Owned Android Watches",
+      href: "/pre_ownedDevices?type=android-watch",
+    },
+    {
+      label: "Pre-Owned Android Tablets",
+      href: "/pre_ownedDevices?type=android-tablet",
+    },
+  ];
 
   const androidDropdown = androidBrands.map((b) => ({
     label: b.name,
@@ -192,16 +205,15 @@ const preOwnedDropdown = [
     href: `/accessories?brand=${encodeURIComponent(b.name)}`,
   }));
 
+  // ✅ ADD cooling products as normal link
   const navItems: NavItem[] = [
     { label: "Home", href: "/home" },
     { label: "Apple", href: "/apple", items: appleDropdown },
     { label: "Android", href: "/android", items: androidDropdown },
-   { label: "Pre-Owned", href: "/pre_ownedDevices", items: preOwnedDropdown },
-
- { label: "Speakers", href: "/speakers", items: speakersDropdown },
-
-   { label: "Accessories", href: "/accessories", items: accessoriesDropdown },
-
+    { label: "Pre-Owned", href: "/pre_ownedDevices", items: preOwnedDropdown },
+    { label: "Speakers", href: "/speakers", items: speakersDropdown },
+    { label: "Accessories", href: "/accessories", items: accessoriesDropdown },
+    { label: "Cooling Products", href: "/coolingproducts" },
   ];
 
   const submitSearch = () => {
@@ -247,17 +259,21 @@ const preOwnedDropdown = [
           isScrolled ? "shadow-[0_4px_30px_rgba(0,0,0,0.3)]" : "shadow-none"
         )}
       >
-        <div ref={navRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ✅ Wider container + responsive padding */}
+        <div
+          ref={navRef}
+          className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 2xl:px-12"
+        >
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link
               href="/"
               className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-lg px-2 py-1 cursor-pointer"
             >
-              <div className="w-9 h-9 bg-[hsl(var(--navbar-text))] rounded-full flex items-center justify-center text-[hsl(var(--navbar-bg))] text-sm font-bold transition-transform duration-300 group-hover:scale-110">
+              <div className="w-10 h-10 bg-[hsl(var(--navbar-text))] rounded-full flex items-center justify-center text-[hsl(var(--navbar-bg))] text-sm font-bold transition-transform duration-300 group-hover:scale-110">
                 P
               </div>
-              <span className="hidden sm:inline font-semibold text-lg tracking-tight transition-opacity duration-300 group-hover:opacity-80">
+              <span className="hidden sm:inline font-semibold text-xl tracking-tight transition-opacity duration-300 group-hover:opacity-80">
                 PhoneShop
               </span>
             </Link>
@@ -275,7 +291,7 @@ const preOwnedDropdown = [
                       key={item.label}
                       href={item.href || "#"}
                       className={cx(
-                        "nav-link px-4 py-2 text-sm font-medium transition-all duration-300 cursor-pointer",
+                        "nav-link px-4 py-2 text-[15px] font-semibold transition-all duration-300 cursor-pointer",
                         "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
                         active && "active text-[hsl(var(--navbar-hover))]"
                       )}
@@ -303,7 +319,7 @@ const preOwnedDropdown = [
                         setHoverDesktop(null);
                       }}
                       className={cx(
-                        "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-300 cursor-pointer",
+                        "nav-link inline-flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold transition-all duration-300 cursor-pointer",
                         "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))]",
                         (isOpenDrop || isHovering) &&
                           "active text-[hsl(var(--navbar-hover))]"
@@ -313,7 +329,7 @@ const preOwnedDropdown = [
                     >
                       {item.label}
                       <ChevronDown
-                        size={14}
+                        size={15}
                         className={cx("chevron", isOpenDrop && "open")}
                       />
                     </button>
@@ -328,14 +344,14 @@ const preOwnedDropdown = [
                       onMouseEnter={() => handleDropdownEnter(item.label)}
                       onMouseLeave={handleDropdownLeave}
                     >
-                      <div className="w-56 rounded-xl border border-[hsl(var(--navbar-dropdown-border))] bg-[hsl(var(--navbar-dropdown-bg))] shadow-2xl overflow-hidden">
+                      <div className="w-60 rounded-xl border border-[hsl(var(--navbar-dropdown-border))] bg-[hsl(var(--navbar-dropdown-bg))] shadow-2xl overflow-hidden">
                         <div className="max-h-[60vh] overflow-auto py-2">
                           {/* View all */}
                           {item.href && (
                             <Link
                               href={item.href}
                               role="menuitem"
-                              className="dropdown-item block px-4 py-2.5 text-sm font-semibold transition-all duration-200 text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] cursor-pointer"
+                              className="dropdown-item block px-4 py-3 text-sm font-semibold transition-all duration-200 text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] cursor-pointer"
                               onClick={() => {
                                 setOpenDesktopDropdown(null);
                                 setHoverDesktop(null);
@@ -350,7 +366,7 @@ const preOwnedDropdown = [
                               key={sub.href}
                               href={sub.href}
                               role="menuitem"
-                              className="dropdown-item block px-4 py-2.5 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] hover:pl-5 cursor-pointer"
+                              className="dropdown-item block px-4 py-3 text-sm transition-all duration-200 text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))] hover:pl-5 cursor-pointer"
                               style={{ animationDelay: `${idx * 30}ms` }}
                               onClick={() => {
                                 setOpenDesktopDropdown(null);
@@ -384,7 +400,7 @@ const preOwnedDropdown = [
                   className="icon-btn p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
                   aria-label={searchOpen ? "Close search" : "Open search"}
                 >
-                  {searchOpen ? <X size={20} /> : <Search size={20} />}
+                  {searchOpen ? <X size={22} /> : <Search size={22} />}
                 </button>
 
                 <div
@@ -393,7 +409,7 @@ const preOwnedDropdown = [
                     searchOpen && "open"
                   )}
                 >
-                  <div className="flex items-center gap-2 bg-[hsl(var(--navbar-dropdown-bg))] border border-[hsl(var(--navbar-dropdown-border))] rounded-lg px-3 py-1.5">
+                  <div className="flex items-center gap-2 bg-[hsl(var(--navbar-dropdown-bg))] border border-[hsl(var(--navbar-dropdown-border))] rounded-lg px-3 py-2">
                     <input
                       ref={searchRef}
                       value={searchQ}
@@ -416,7 +432,7 @@ const preOwnedDropdown = [
                 className="icon-btn relative p-2.5 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
                 aria-label={`Shopping cart with ${items.length} items`}
               >
-                <ShoppingCart size={20} />
+                <ShoppingCart size={22} />
                 {items.length > 0 && (
                   <span className="cart-badge absolute -top-0.5 -right-0.5 bg-[hsl(var(--navbar-text))] text-[hsl(var(--navbar-bg))] text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {items.length}
@@ -464,7 +480,6 @@ const preOwnedDropdown = [
             )}
           >
             <div className="py-4">
-              {/* Mobile Nav Items */}
               <div className="space-y-1">
                 {navItems.map((item) => {
                   const hasDropdown =
@@ -476,7 +491,7 @@ const preOwnedDropdown = [
                         key={item.label}
                         href={item.href || "#"}
                         className={cx(
-                          "block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-lg mx-2 cursor-pointer",
+                          "block px-4 py-3 text-[15px] font-semibold transition-all duration-300 rounded-lg mx-2 cursor-pointer",
                           isActive(item.href)
                             ? "text-[hsl(var(--navbar-hover))] bg-[hsl(var(--navbar-dropdown-hover))]"
                             : "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
@@ -495,7 +510,7 @@ const preOwnedDropdown = [
                       <button
                         type="button"
                         className={cx(
-                          "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer",
+                          "w-full flex items-center justify-between px-4 py-3 text-[15px] font-semibold rounded-lg transition-all duration-300 cursor-pointer",
                           sectionOpen
                             ? "text-[hsl(var(--navbar-hover))] bg-[hsl(var(--navbar-dropdown-hover))]"
                             : "text-[hsl(var(--navbar-text-muted))] hover:text-[hsl(var(--navbar-hover))] hover:bg-[hsl(var(--navbar-dropdown-hover))]"
@@ -505,7 +520,7 @@ const preOwnedDropdown = [
                       >
                         <span>{item.label}</span>
                         <ChevronDown
-                          size={16}
+                          size={18}
                           className={cx("chevron", sectionOpen && "open")}
                         />
                       </button>
@@ -514,7 +529,6 @@ const preOwnedDropdown = [
                         className={cx("mobile-accordion", sectionOpen && "open")}
                       >
                         <div className="pt-1 pb-2 space-y-0.5">
-                          {/* View all */}
                           {item.href && (
                             <Link
                               href={item.href}
@@ -640,14 +654,14 @@ const preOwnedDropdown = [
           transition: width 280ms ease, opacity 220ms ease, transform 220ms ease;
         }
         .search-container.open {
-          width: 260px;
+          width: 300px;
           opacity: 1;
           transform: translateX(0);
           margin-left: 8px;
         }
         @media (max-width: 640px) {
           .search-container.open {
-            width: 210px;
+            width: 220px;
           }
         }
 
