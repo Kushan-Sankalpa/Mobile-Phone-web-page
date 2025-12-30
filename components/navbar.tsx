@@ -198,7 +198,8 @@ const preOwnedDropdown = [
     { label: "Android", href: "/android", items: androidDropdown },
    { label: "Pre-Owned", href: "/pre_ownedDevices", items: preOwnedDropdown },
 
-    { label: "Speakers", items: speakersDropdown },
+ { label: "Speakers", href: "/speakers", items: speakersDropdown },
+
     { label: "Accessories", items: accessoriesDropdown },
   ];
 
