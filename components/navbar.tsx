@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/cart-context";
 import { fetchBrands, fetchSpeakerBrands } from "@/lib/catalog";
@@ -171,23 +172,11 @@ export default function Navbar() {
     { label: "Pre-Owned iPhone", href: "/pre_ownedDevices?type=iphone" },
     { label: "Pre-Owned iPads", href: "/pre_ownedDevices?type=ipad" },
     { label: "Pre-Owned MacBooks", href: "/pre_ownedDevices?type=macbook" },
-    {
-      label: "Pre-Owned Apple Watches",
-      href: "/pre_ownedDevices?type=apple-watch",
-    },
+    { label: "Pre-Owned Apple Watches", href: "/pre_ownedDevices?type=apple-watch" },
     { label: "Pre-Owned AirPods", href: "/pre_ownedDevices?type=airpods" },
-    {
-      label: "Pre-Owned Android Phones",
-      href: "/pre_ownedDevices?type=android-phone",
-    },
-    {
-      label: "Pre-Owned Android Watches",
-      href: "/pre_ownedDevices?type=android-watch",
-    },
-    {
-      label: "Pre-Owned Android Tablets",
-      href: "/pre_ownedDevices?type=android-tablet",
-    },
+    { label: "Pre-Owned Android Phones", href: "/pre_ownedDevices?type=android-phone" },
+    { label: "Pre-Owned Android Watches", href: "/pre_ownedDevices?type=android-watch" },
+    { label: "Pre-Owned Android Tablets", href: "/pre_ownedDevices?type=android-tablet" },
   ];
 
   const androidDropdown = androidBrands.map((b) => ({
@@ -205,7 +194,6 @@ export default function Navbar() {
     href: `/accessories?brand=${encodeURIComponent(b.name)}`,
   }));
 
-  // ✅ ADD cooling products as normal link
   const navItems: NavItem[] = [
     { label: "Home", href: "/home" },
     { label: "Apple", href: "/apple", items: appleDropdown },
@@ -259,23 +247,29 @@ export default function Navbar() {
           isScrolled ? "shadow-[0_4px_30px_rgba(0,0,0,0.3)]" : "shadow-none"
         )}
       >
-        {/* ✅ Wider container + responsive padding */}
+        {/* Wider container + responsive padding */}
         <div
           ref={navRef}
           className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 2xl:px-12"
         >
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
+          <div className="flex justify-between items-center h-20">
+            {/* ✅ Logo (replaces P circle + PhoneShop text) */}
             <Link
               href="/"
-              className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-lg px-2 py-1 cursor-pointer"
+              className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-lg px-2 py-1 cursor-pointer"
+              aria-label="Home"
             >
-              <div className="w-10 h-10 bg-[hsl(var(--navbar-text))] rounded-full flex items-center justify-center text-[hsl(var(--navbar-bg))] text-sm font-bold transition-transform duration-300 group-hover:scale-110">
-                P
-              </div>
-              <span className="hidden sm:inline font-semibold text-xl tracking-tight transition-opacity duration-300 group-hover:opacity-80">
-                PhoneShop
-              </span>
+              {/* Put the PNG inside /public and keep this path */}
+             <Image
+  src="/frozio.png"
+  alt="Frozio Gadgets LK"
+  width={360}
+  height={120}
+  priority
+  className="h-14 w-auto sm:h-16 md:h-38"
+  style={{ objectFit: "contain" }}
+/>
+
             </Link>
 
             {/* Desktop Navigation */}
