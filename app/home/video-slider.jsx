@@ -9,42 +9,61 @@ const slides = [
     id: 1,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/googlepixel-zLKE2ISzdrASuKOc08RhnFoNYo93M6.mp4",
-    
   },
   {
     id: 2,
     video:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AppleShort-ioQTH3tg3LOr0klY8l1SNLfeuLffUg.mp4",
-    
   },
-  // Local files served from /public/media
-  { id: 3, video: "/media/samsung.mp4",  },
-  { id: 4, video: "/media/applelong.mp4",  },
+  { id: 3, video: "/media/samsung.mp4" },
+  { id: 4, video: "/media/applelong.mp4" },
 ];
 
 export default function VideoSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showPlayButton, setShowPlayButton] = useState(true);
   const [progress, setProgress] = useState(0);
+
+  // Only affects iPad Pro and below
+  const [isCompact, setIsCompact] = useState(false);
+
   const videoRef = useRef(null);
 
-  // Attach listeners to CURRENT slide's <video>
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mql = window.matchMedia("(max-width: 1366px)");
+    const apply = () => setIsCompact(mql.matches);
+
+    apply();
+
+    if (mql.addEventListener) mql.addEventListener("change", apply);
+    else mql.addListener(apply);
+
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", apply);
+      else mql.removeListener(apply);
+    };
+  }, []);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const handleTimeUpdate = () => {
-      const percent = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+      const percent = video.duration
+        ? (video.currentTime / video.duration) * 100
+        : 0;
       setProgress(percent);
     };
+
     const handleEnded = () => nextSlide();
-    const handlePlay  = () => setShowPlayButton(false);
+    const handlePlay = () => setShowPlayButton(false);
 
     video.addEventListener("timeupdate", handleTimeUpdate);
     video.addEventListener("ended", handleEnded);
     video.addEventListener("play", handlePlay);
 
-    // Try autoplay for the active slide
     const tryAutoplay = async () => {
       try {
         await video.play();
@@ -93,8 +112,20 @@ export default function VideoSlider() {
 
   return (
     <div className={styles.slider} role="region" aria-label="Video slider">
-      {/* Slides */}
-      <div className={styles.slidesWrap}>
+      <div
+        className={styles.slidesWrap}
+        // ✅ Only on mobile/iPad: set a taller fixed area (no leftover blank space)
+        style={
+          isCompact
+            ? {
+                width: "100%",
+                maxWidth: "100%",
+                height: "clamp(320px, 78vw, 560px)", // INCREASED height for mobile
+                overflow: "hidden",
+              }
+            : undefined
+        }
+      >
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
           return (
@@ -103,10 +134,11 @@ export default function VideoSlider() {
               className={`${styles.slide} ${isActive ? styles.slideVisible : ""}`}
               role="tabpanel"
               aria-label={`Slide ${index + 1}: ${slide.title}`}
+              // ✅ Ensure slide matches wrapper height on mobile
+              style={isCompact ? { height: "100%" } : undefined}
             >
               <video
                 ref={isActive ? videoRef : null}
-                // Lazy src: only load the active slide
                 src={isActive ? slide.video : undefined}
                 preload={isActive ? "auto" : "none"}
                 className={`${styles.video} no-native-controls`}
@@ -115,6 +147,17 @@ export default function VideoSlider() {
                 controls={false}
                 controlsList="nodownload nofullscreen noplaybackrate"
                 disablePictureInPicture
+                // ✅ Fill the wrapper so no empty area appears under the video
+                style={
+                  isCompact
+                    ? {
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }
+                    : undefined
+                }
               />
 
               {/* Play overlay if autoplay is blocked */}
@@ -134,7 +177,6 @@ export default function VideoSlider() {
         })}
       </div>
 
-      {/* Hidden preloader for the next slide (optional) */}
       {slides.length > 1 && (
         <video
           className={styles.srOnly}
@@ -146,18 +188,6 @@ export default function VideoSlider() {
         />
       )}
 
-      {/* Progress */}
-      {/* <progress
-        className={styles.progress}
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(progress)}
-        max={100}
-        value={progress}
-      /> */}
-
-      {/* Arrows */}
       <button
         onClick={prevSlide}
         className={`${styles.navButton} ${styles.left}`}
@@ -165,6 +195,7 @@ export default function VideoSlider() {
       >
         <ChevronLeft size={24} className={styles.icon} />
       </button>
+
       <button
         onClick={nextSlide}
         className={`${styles.navButton} ${styles.right}`}
@@ -173,7 +204,6 @@ export default function VideoSlider() {
         <ChevronRight size={24} className={styles.icon} />
       </button>
 
-      {/* Dots */}
       <div className={styles.dots} role="tablist">
         {slides.map((_, index) => (
           <button
@@ -187,10 +217,33 @@ export default function VideoSlider() {
         ))}
       </div>
 
-      {/* Title */}
       <div className={styles.titleWrap}>
         <h2 className={styles.title}>{slides[currentSlide].title}</h2>
       </div>
+
+      {/* ✅ Mobile/iPad-only fixes: remove huge white space + keep background clean */}
+      <style jsx>{`
+        @media (max-width: 1366px) {
+          /* This is the key fix: if .slider has height/min-height in your CSS module */
+          :global(.${styles.slider}) {
+            height: auto !important;
+            min-height: 0 !important;
+            background: transparent !important;
+          }
+
+          :global(.${styles.slidesWrap}) {
+            background: transparent !important;
+          }
+
+          :global(.${styles.slide}) {
+            background: transparent !important;
+          }
+
+          :global(.${styles.video}) {
+            background: transparent !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
