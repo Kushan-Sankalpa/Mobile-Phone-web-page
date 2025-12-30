@@ -526,3 +526,94 @@ export async function fetchUsedAndroidItemsByCategoryTypes(
   return androidOnly.filter((p) => categoryIn(p, allowedCategoryTypes));
 }
 
+
+
+type AdminAccessoryItem = {
+  _id: string;
+  brand: string;
+  categoryType?: string;
+  model: string;
+  price: number;
+
+  discountType?: "percent" | "amount" | null;
+  discountValue?: number | null;
+
+  colors?: string[];
+  mainImageUrl?: string;
+  galleryImageUrls?: string[];
+
+  shortDescription?: string;
+  longDescription?: string;
+
+  inStock?: boolean;
+  status?: string;
+};
+
+function mapAccessoryToStorefront(item: AdminAccessoryItem): StorefrontProduct {
+  const images: string[] = [];
+
+  if (item.mainImageUrl) images.push(`${ASSET_BASE}${item.mainImageUrl}`);
+  if (Array.isArray(item.galleryImageUrls)) {
+    images.push(...item.galleryImageUrls.map((u) => `${ASSET_BASE}${u}`));
+  }
+  if (images.length === 0) images.push("/placeholder.svg?height=400&width=400");
+
+  const rawPrice = Number(item.price ?? 0);
+  let finalPrice = rawPrice;
+
+  let offerType: "percent" | "amount" | null = null;
+  let offerValue = 0;
+
+  if (item.discountType === "percent" && item.discountValue) {
+    offerType = "percent";
+    offerValue = Number(item.discountValue);
+    finalPrice = rawPrice * (1 - Number(item.discountValue) / 100);
+  } else if (item.discountType === "amount" && item.discountValue) {
+    offerType = "amount";
+    offerValue = Number(item.discountValue);
+    finalPrice = rawPrice - Number(item.discountValue);
+  }
+
+  if (!Number.isFinite(finalPrice) || finalPrice < 0) finalPrice = 0;
+
+  const specs: string[] = [];
+  if (item.shortDescription) specs.push(item.shortDescription);
+  if (item.longDescription) specs.push(item.longDescription);
+  if (item.colors?.length) specs.push(item.colors.join(", "));
+
+  return {
+    id: item._id,
+    brand: item.brand,
+    name: item.model,
+    model: item.model,
+    price: finalPrice,
+    specs,
+    images,
+    originalPrice: rawPrice,
+    offerType,
+    offerValue,
+    colors: item.colors ?? [],
+    categoryType: item.categoryType,
+  };
+}
+
+export async function fetchAccessories(): Promise<StorefrontProduct[]> {
+  const params = new URLSearchParams({
+    status: "Active",
+    inStock: "true",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    limit: "200",
+  });
+
+  const url = `${API}/accessories?${params.toString()}`;
+  const res = await fetch(url, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error(`Accessories fetch failed: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const items: AdminAccessoryItem[] = data?.items ?? [];
+  return items.map(mapAccessoryToStorefront);
+}

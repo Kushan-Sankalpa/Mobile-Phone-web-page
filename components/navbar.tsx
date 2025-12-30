@@ -200,7 +200,8 @@ const preOwnedDropdown = [
 
  { label: "Speakers", href: "/speakers", items: speakersDropdown },
 
-    { label: "Accessories", items: accessoriesDropdown },
+   { label: "Accessories", href: "/accessories", items: accessoriesDropdown },
+
   ];
 
   const submitSearch = () => {
