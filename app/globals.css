@@ -169,3 +169,21 @@
     @apply bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2 rounded-lg transition-colors font-medium border border-border;
   }
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 22s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+    transform: none;
+  }
+}
+
+
