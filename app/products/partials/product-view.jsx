@@ -68,7 +68,6 @@ function normalizeColors(p) {
 
   return raw
     .map((v, i) => {
-      // populated object
       if (v && typeof v === "object") {
         return {
           id: v._id || v.id || `${i}`,
@@ -78,7 +77,6 @@ function normalizeColors(p) {
         };
       }
 
-      // string
       if (typeof v === "string") {
         return {
           id: `${i}-${v}`,
@@ -176,7 +174,6 @@ export default function ProductView({ productId }) {
     return true;
   }, [product]);
 
-  // ✅ Load product: show sessionStorage fast, but ALWAYS fetch /phones/:id
   useEffect(() => {
     if (!productId) {
       setLoading(false);
@@ -192,7 +189,6 @@ export default function ProductView({ productId }) {
         setLoading(true);
         setError("");
 
-        // 1) sessionStorage preview (optional)
         let fromSession = null;
         try {
           const raw = sessionStorage.getItem(`pv:${productId}`);
@@ -203,7 +199,6 @@ export default function ProductView({ productId }) {
           setProduct(fromSession);
         }
 
-        // 2) ALWAYS fetch full product by id
         const p = await fetchPublicPhoneById(productId);
 
         if (alive) {
@@ -226,7 +221,6 @@ export default function ProductView({ productId }) {
     };
   }, [productId]);
 
-  // default selections
   useEffect(() => {
     if (!product) return;
 
@@ -237,7 +231,6 @@ export default function ProductView({ productId }) {
     if (s0 && selectedStorage == null) setSelectedStorage(s0);
   }, [product, colors, storages, selectedColorId, selectedStorage]);
 
-  // wishlist state (localStorage)
   useEffect(() => {
     if (!productId) return;
     try {
@@ -262,7 +255,6 @@ export default function ProductView({ productId }) {
     }
   };
 
-  // Reviews (localStorage per product)
   useEffect(() => {
     if (!productId) return;
     try {
@@ -409,6 +401,7 @@ export default function ProductView({ productId }) {
   return (
     <section className={styles.wrap} aria-label="Product view">
       <div className={styles.container}>
+        {/* ✅ Two columns: Gallery left, Details right */}
         <div className={styles.topGrid}>
           {/* Gallery */}
           <div className={styles.gallery}>
@@ -456,7 +449,7 @@ export default function ProductView({ productId }) {
             </div>
           </div>
 
-          {/* Right side */}
+          {/* Details */}
           <div className={styles.details}>
             <div className={styles.titleRow}>
               <h1 className={styles.title}>{product.name}</h1>
@@ -563,7 +556,9 @@ export default function ProductView({ productId }) {
               )}
             </div>
 
-            {product.shortDescription ? <p className={styles.shortDesc}>{product.shortDescription}</p> : null}
+            {product.shortDescription ? (
+              <p className={styles.shortDesc}>{product.shortDescription}</p>
+            ) : null}
 
             {/* Quantity */}
             <div className={styles.qtyRow}>
@@ -615,7 +610,7 @@ export default function ProductView({ productId }) {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* ✅ Tabs under gallery+details (nav links) */}
         <div className={styles.tabs}>
           <button
             type="button"
@@ -640,7 +635,6 @@ export default function ProductView({ productId }) {
           </button>
         </div>
 
-        {/* Panels */}
         <div className={styles.panel}>
           {tab === "description" && (
             <div className={styles.descGrid}>
@@ -834,13 +828,23 @@ export default function ProductView({ productId }) {
             <X size={18} />
           </button>
 
-          <button type="button" className={styles.lightboxPrev} onClick={prevImg} aria-label="Previous image">
+          <button
+            type="button"
+            className={styles.lightboxPrev}
+            onClick={prevImg}
+            aria-label="Previous image"
+          >
             <ChevronLeft size={22} />
           </button>
 
           <img src={images[activeImg]} alt={product.name} className={styles.lightboxImg} />
 
-          <button type="button" className={styles.lightboxNext} onClick={nextImg} aria-label="Next image">
+          <button
+            type="button"
+            className={styles.lightboxNext}
+            onClick={nextImg}
+            aria-label="Next image"
+          >
             <ChevronRight size={22} />
           </button>
         </div>

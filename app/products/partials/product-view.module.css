@@ -1,7 +1,9 @@
 /* src/app/products/partials/product-view.module.css */
 
 .wrap {
-  padding: 110px 16px 48px; /* ✅ push down from top */
+  padding: 110px 16px 48px;
+  background: #ffffff;
+  color: #000;
 }
 
 .container {
@@ -9,18 +11,24 @@
   margin: 0 auto;
 }
 
-/* ✅ stacked layout (gallery then details) */
+/* ✅ 2 columns on desktop: gallery left, details right */
 .topGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1.05fr 0.95fr;
   gap: 18px;
   align-items: start;
 }
 
+@media (max-width: 980px) {
+  .topGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Gallery ---------- */
 .gallery {
-  background: #0b0b0c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   padding: 14px;
 }
@@ -29,7 +37,7 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  background: #111;
+  background: #f6f7f9;
   aspect-ratio: 1 / 1;
 }
 
@@ -48,7 +56,7 @@
   z-index: 3;
   background: #ff2d55;
   color: #fff;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
@@ -63,9 +71,9 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.35);
-  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(255, 255, 255, 0.8);
+  color: #111;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -73,7 +81,7 @@
 
 .navArrowLeft:hover,
 .navArrowRight:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 1);
 }
 
 .navArrowLeft {
@@ -99,8 +107,8 @@
 
 .thumbBtn {
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #0f0f10;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
@@ -120,8 +128,8 @@
 
 /* ---------- Details ---------- */
 .details {
-  background: #0b0b0c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   padding: 16px;
 }
@@ -137,16 +145,16 @@
   font-size: 22px;
   line-height: 1.2;
   margin: 0;
-  color: #fff;
+  color: #000;
 }
 
 .wishBtn {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #ffffff;
+  color: #111;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -162,7 +170,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.65);
   font-size: 13px;
 }
 
@@ -178,15 +186,15 @@
 }
 
 .oldPrice {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.45);
   text-decoration: line-through;
   font-size: 14px;
 }
 
 .newPrice {
   font-size: 22px;
-  font-weight: 800;
-  color: #fff;
+  font-weight: 900;
+  color: #000;
 }
 
 /* ---------- Options ---------- */
@@ -196,8 +204,8 @@
 
 .optLabel {
   font-size: 13px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.82);
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.75);
   margin-bottom: 8px;
 }
 
@@ -211,7 +219,7 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.14);
+  border: 2px solid rgba(0, 0, 0, 0.14);
   background: transparent;
   padding: 0;
   cursor: pointer;
@@ -222,7 +230,7 @@
 
 .colorActive {
   border-color: rgba(255, 45, 85, 0.85);
-  box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.18);
+  box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.16);
 }
 
 .colorSwatch {
@@ -246,17 +254,17 @@
 .storageBtn {
   border-radius: 999px;
   padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: #ffffff;
+  color: #111;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 900;
   font-size: 13px;
 }
 
 .storageActive {
   border-color: rgba(255, 45, 85, 0.85);
-  background: rgba(255, 45, 85, 0.18);
+  background: rgba(255, 45, 85, 0.12);
 }
 
 /* ---------- Stock & Warranty ---------- */
@@ -269,32 +277,32 @@
 }
 
 .stock {
-  font-weight: 800;
+  font-weight: 900;
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
 }
 
 .stockIn {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.28);
 }
 
 .stockOut {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.28);
 }
 
 .warranty {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .shortDesc {
   margin-top: 10px;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(0, 0, 0, 0.82);
   line-height: 1.6;
   font-size: 14px;
 }
@@ -312,8 +320,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 6px;
 }
@@ -322,9 +330,9 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #f3f4f6;
+  color: #111;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -333,8 +341,8 @@
 .qtyVal {
   min-width: 32px;
   text-align: center;
-  font-weight: 800;
-  color: #fff;
+  font-weight: 900;
+  color: #000;
 }
 
 .ctaRow {
@@ -349,9 +357,9 @@
 .btnGhost {
   border-radius: 12px;
   padding: 12px 14px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(0, 0, 0, 0.14);
 }
 
 .btnPrimary {
@@ -361,6 +369,7 @@
   gap: 10px;
   justify-content: center;
   align-items: center;
+  border-color: rgba(255, 45, 85, 0.3);
 }
 
 .btnPrimary:disabled {
@@ -369,35 +378,37 @@
 }
 
 .btnSecondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: #ffffff;
+  color: #111;
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
 .btnGhost {
   background: transparent;
-  color: #fff;
+  color: #111;
+  border-color: rgba(0, 0, 0, 0.18);
 }
 
-/* ---------- Tabs ---------- */
+/* ---------- Tabs (nav links) ---------- */
 .tabs {
   margin-top: 18px;
   display: flex;
   gap: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .tabBtn {
   padding: 12px 10px;
   background: transparent;
   border: 0;
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 800;
+  color: rgba(0, 0, 0, 0.7); /* ✅ black-ish */
+  font-weight: 900;
   cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 
 .tabActive {
-  color: #fff;
+  color: #000; /* ✅ black */
   border-bottom-color: rgba(255, 45, 85, 0.85);
 }
 
@@ -405,7 +416,7 @@
   padding-top: 16px;
 }
 
-/* ✅ Description + Additional panels -> BLACK TEXT */
+/* ---------- Description + Additional panels ---------- */
 .descGrid,
 .tableWrap {
   background: #fff;
@@ -447,14 +458,14 @@
 .specKey {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.6);
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .specVal {
   margin-top: 6px;
   font-size: 14px;
   color: #000;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .longDesc {
@@ -467,7 +478,7 @@
 .h3 {
   margin: 0 0 10px;
   font-size: 15px;
-  font-weight: 900;
+  font-weight: 1000;
   color: #000;
 }
 
@@ -497,10 +508,10 @@
 .infoTable td:first-child {
   width: 34%;
   color: rgba(0, 0, 0, 0.6);
-  font-weight: 900;
+  font-weight: 1000;
 }
 
-/* ---------- Reviews (kept as original dark styling) ---------- */
+/* ---------- Reviews (✅ now WHITE background + BLACK text) ---------- */
 .reviewsGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -509,7 +520,7 @@
 
 .reviewSummary {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 0.95fr 1.05fr;
   gap: 14px;
 }
 
@@ -519,9 +530,11 @@
   }
 }
 
-.overallBox {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.overallBox,
+.reviewForm,
+.recentReviews {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   padding: 14px;
 }
@@ -534,8 +547,9 @@
 
 .overallScore {
   font-size: 40px;
-  font-weight: 1000;
+  font-weight: 1100;
   line-height: 1;
+  color: #000;
 }
 
 .overallMeta {
@@ -544,13 +558,14 @@
 }
 
 .overallOutOf {
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 800;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 900;
 }
 
 .overallCount {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.65);
   font-size: 13px;
+  font-weight: 800;
 }
 
 .breakdown {
@@ -567,15 +582,15 @@
 }
 
 .barLabel {
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 800;
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 900;
   font-size: 12px;
 }
 
 .barTrack {
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
@@ -586,17 +601,10 @@
 }
 
 .barCount {
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 900;
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 1000;
   font-size: 12px;
   text-align: right;
-}
-
-.reviewForm {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 14px;
 }
 
 .formRow {
@@ -606,37 +614,30 @@
 }
 
 .formLabel {
-  font-weight: 900;
+  font-weight: 1000;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .textArea {
   width: 100%;
   border-radius: 12px;
   padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #fff;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  color: #000;
   outline: none;
 }
 
 .fileInput {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.75);
 }
 
 .reviewPreview {
   margin-top: 10px;
   max-width: 160px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.recentReviews {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
 }
 
 .reviewList {
@@ -646,8 +647,8 @@
 }
 
 .reviewCard {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   padding: 12px;
 }
@@ -659,8 +660,8 @@
 }
 
 .reviewDate {
-  color: rgba(255, 255, 255, 0.65);
-  font-weight: 800;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 900;
   font-size: 12px;
 }
 
@@ -670,13 +671,14 @@
   max-height: 220px;
   object-fit: contain;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .reviewText {
   margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(0, 0, 0, 0.85);
   line-height: 1.6;
+  font-weight: 700;
 }
 
 .stars {
@@ -697,15 +699,16 @@
 }
 
 .starOff {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(0, 0, 0, 0.25);
 }
 
 .muted {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(0, 0, 0, 0.6);
   font-size: 13px;
+  font-weight: 700;
 }
 
-/* ---------- Lightbox ---------- */
+/* ---------- Lightbox (keep dark overlay) ---------- */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -774,20 +777,22 @@
   margin: 0 auto;
   padding: 18px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   text-align: center;
 }
 
 .stateTitle {
   margin: 0;
   font-size: 18px;
-  font-weight: 1000;
+  font-weight: 1100;
+  color: #000;
 }
 
 .stateText {
   margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 700;
 }
 
 .stateRow {
@@ -803,7 +808,7 @@
   height: 38px;
   margin: 0 auto 10px;
   border-radius: 999px;
-  border: 3px solid rgba(255, 255, 255, 0.14);
+  border: 3px solid rgba(0, 0, 0, 0.12);
   border-top-color: rgba(255, 45, 85, 0.85);
   animation: spin 1s linear infinite;
 }
