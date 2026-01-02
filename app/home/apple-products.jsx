@@ -6,6 +6,7 @@ import styles from "./apple-products.module.css";
 import { ShoppingCart, Search, Heart } from "lucide-react";
 import { fetchApplePhones } from "@/lib/catalog";
 import { useCart } from "@/context/cart-context";
+import { useRouter } from "next/navigation";
 
 function formatRs(n) {
   const num = Number(n || 0);
@@ -29,16 +30,14 @@ function deviceTypeFromName(name) {
 }
 
 function colorCandidates(item) {
-  // Prefer colors from BrandNewMobilePhone.colors
+  // Prefer any meaningful colors array
   const fromApi =
     item?.colors ||
     item?.availableColors ||
     item?.colourOptions ||
     item?.variants?.flatMap?.((v) => v?.color).filter(Boolean);
 
-  if (Array.isArray(fromApi) && fromApi.length) {
-    return fromApi.slice(0, 6);
-  }
+  if (Array.isArray(fromApi) && fromApi.length) return fromApi.slice(0, 6);
 
   // Fallback palette
   return ["#1f2937", "#e5e7eb", "#f59e0b", "#10b981", "#3b82f6", "#94a3b8"].slice(
@@ -52,6 +51,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
   const { addItem } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     let alive = true;
@@ -75,9 +75,6 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
 
   const limited = useMemo(() => items.slice(0, limit), [items, limit]);
 
-  // Extra safety client-side:
-  // - brand = Apple
-  // - deviceStatus = not used
   const list = useMemo(() => {
     return limited.filter((p) => {
       const brandOk = (p.brand || "").toLowerCase().trim() === "apple";
@@ -94,6 +91,14 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
       image: p.images?.[0] || "/placeholder.svg?height=400&width=400",
       quantity: 1,
     });
+  };
+
+  const goToProduct = (p) => {
+    try {
+      // Store full product so product-view loads instantly
+      sessionStorage.setItem(`pv:${p.id}`, JSON.stringify(p));
+    } catch {}
+    router.push(`/products?id=${encodeURIComponent(p.id)}`);
   };
 
   return (
@@ -116,13 +121,16 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
             const colors = colorCandidates(p);
 
             const hasDiscount =
-              p.offerType === "percent" &&
+              (p.offerType === "percent" || p.offerType === "amount") &&
               Number(p.offerValue) > 0 &&
               Number(p.originalPrice) > Number(p.price);
 
-            const discountLabel = hasDiscount
-              ? `${Math.round(Number(p.offerValue))}% OFF`
-              : "";
+            const discountLabel =
+              hasDiscount && p.offerType === "percent"
+                ? `${Math.round(Number(p.offerValue))}% OFF`
+                : hasDiscount && p.offerType === "amount"
+                ? `Rs.${Math.round(Number(p.offerValue))} OFF`
+                : "";
 
             const categoryLabel = p.categoryType || device;
             const statusLabel =
@@ -130,23 +138,26 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
               (p.deviceStatus.toLowerCase() === "not used" ? "Not used" : "Used");
 
             return (
-              <article key={p.id} className={styles.card}>
+              <article
+                key={p.id}
+                className={styles.card}
+                onClick={() => goToProduct(p)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") goToProduct(p);
+                }}
+              >
                 <div className={styles.media}>
-                  {/* ✅ Badge MUST be inside .media (because .media is position:relative) */}
                   {hasDiscount && (
                     <div className={styles.badges}>
                       <span className={styles.badgeOff}>{discountLabel}</span>
                     </div>
                   )}
 
-                  <img
-                    src={img}
-                    alt={p.name}
-                    className={styles.image}
-                    loading="lazy"
-                  />
+                  <img src={img} alt={p.name} className={styles.image} loading="lazy" />
 
-                  <div className={styles.actions}>
+                  <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"
                       className={styles.iconBtn}
@@ -160,7 +171,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                       type="button"
                       className={styles.iconBtn}
                       aria-label={`View ${p.name}`}
-                      onClick={() => (window.location.href = "/apple")}
+                      onClick={() => goToProduct(p)}
                     >
                       <Search size={18} />
                     </button>
@@ -189,7 +200,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
                       <span
                         key={i}
                         className={styles.swatch}
-                        style={{ backgroundColor: c }}
+                        style={{ backgroundColor: typeof c === "string" ? c : "#e5e7eb" }}
                         title={typeof c === "string" ? c : `Color ${i + 1}`}
                         aria-hidden="true"
                       />
@@ -198,9 +209,7 @@ export default function AppleProducts({ title = "Apple Products", limit = 8 }) {
 
                   <div className={styles.priceWrap}>
                     {hasDiscount && (
-                      <div className={styles.oldPrice}>
-                        {formatRs(p.originalPrice)}
-                      </div>
+                      <div className={styles.oldPrice}>{formatRs(p.originalPrice)}</div>
                     )}
                     <div className={styles.newPrice}>{formatRs(p.price)}</div>
                   </div>

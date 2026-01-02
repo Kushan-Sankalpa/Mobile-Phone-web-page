@@ -10,20 +10,36 @@ type AdminAppleItem = {
   model: string;
   price: number;
 
-  // Discount fields from BrandNewMobilePhone
-  discountType?: "percent" | "amount" | null;
+  discountType?: "percent" | "amount" | "" | null;
   discountValue?: number | null;
 
   os?: string;
-  storageGB?: number;
-  ramGB?: number;
-  batteryMah?: number;
 
-  colors?: string[];
+  // storage (old + new)
+  storageGB?: number | null;
+  storageOptions?: any[]; // populated objects or ids
+
+  ramGB?: number | null;
+  batteryMah?: number | null;
+
+  display?: { sizeInches?: string; type?: string; resolution?: string };
+  cameras?: { rearMP?: string; frontMP?: string };
+
+  colors?: any[]; // populated objects or strings/ids
 
   deviceStatus?: "used" | "not used";
 
-  display?: { sizeInches?: number; type?: string; resolution?: string };
+  inStock?: boolean;
+  stockCount?: number | null;
+
+  status?: string;
+
+  shortDescription?: string;
+  longDescription?: string;
+
+  warrantyType?: string;
+  warrantyPeriod?: string;
+
   mainImageUrl?: string;
   galleryImageUrls?: string[];
 };
@@ -41,11 +57,37 @@ export type StorefrontProduct = {
   originalPrice?: number;
   offerType?: "percent" | "amount" | null;
   offerValue?: number;
-  colors?: string[];
 
-  // extra info for UI
   categoryType?: string;
   deviceStatus?: string;
+
+  // ✅ details used by ProductView
+  shortDescription?: string;
+  longDescription?: string;
+
+  os?: string;
+  ramGB?: number | null;
+  batteryMah?: number | null;
+
+  display?: {
+    sizeInches?: string;
+    type?: string;
+    resolution?: string;
+  };
+
+  cameras?: {
+    rearMP?: string;
+    frontMP?: string;
+  };
+
+  warrantyType?: string;
+  warrantyPeriod?: string;
+
+  inStock?: boolean;
+  stockCount?: number | null;
+
+  colors?: any[];
+  storageOptions?: any[];
 };
 
 export type StorefrontBrand = {
@@ -58,7 +100,7 @@ export type StorefrontBrand = {
 // ⬇️ UPDATED: shape coming from BrandNewSpeaker collection
 type AdminSpeakerItem = {
   _id: string;
-  brand: string; // brand name e.g. "JBL"
+  brand: string;
   categoryType?: string;
   model: string;
   price: number;
@@ -77,10 +119,9 @@ type AdminSpeakerItem = {
   status?: string;
 };
 
-
 type AdminCoolerItem = {
   _id: string;
-  brand: string; // brand name e.g. "Igloo"
+  brand: string;
   categoryType?: string;
   model: string;
   price: number;
@@ -102,19 +143,14 @@ type AdminCoolerItem = {
   warrantyPeriod?: string;
 };
 
-
 function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
   const images: string[] = [];
 
-  if (item.mainImageUrl) {
-    images.push(`${ASSET_BASE}${item.mainImageUrl}`);
-  }
+  if (item.mainImageUrl) images.push(`${ASSET_BASE}${item.mainImageUrl}`);
   if (Array.isArray(item.galleryImageUrls)) {
     images.push(...item.galleryImageUrls.map((u) => `${ASSET_BASE}${u}`));
   }
-  if (images.length === 0) {
-    images.push("/placeholder.svg?height=400&width=400");
-  }
+  if (images.length === 0) images.push("/placeholder.svg?height=400&width=400");
 
   const rawPrice = item.price ?? 0;
   let finalPrice = rawPrice;
@@ -140,7 +176,6 @@ function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
 
   return {
     id: item._id,
-    // brand name directly from document (e.g. "JBL")
     brand: item.brand,
     name: item.model,
     model: item.model,
@@ -152,6 +187,10 @@ function mapSpeakerToStorefront(item: AdminSpeakerItem): StorefrontProduct {
     offerValue,
     colors: item.colors ?? [],
     categoryType: item.categoryType,
+
+    shortDescription: item.shortDescription || "",
+    longDescription: item.longDescription || "",
+    inStock: item.inStock,
   };
 }
 
@@ -181,7 +220,6 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
   const rawPrice = Number(item.price ?? 0);
   let finalPrice = rawPrice;
 
-  // ✅ normalize discount fields
   const dtype = String(item.discountType ?? "").trim().toLowerCase();
   const dval =
     item.discountValue === undefined || item.discountValue === null
@@ -191,15 +229,11 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
   let offerType: "percent" | "amount" | null = null;
   let offerValue = 0;
 
-  // ✅ percent discount
   if (dtype === "percent" && dval !== null && Number.isFinite(dval) && dval > 0) {
     offerType = "percent";
     offerValue = dval;
     finalPrice = rawPrice * (1 - dval / 100);
-  }
-
-  // ✅ (optional) keep amount support if you still use it
-  else if (dtype === "amount" && dval !== null && Number.isFinite(dval) && dval > 0) {
+  } else if (dtype === "amount" && dval !== null && Number.isFinite(dval) && dval > 0) {
     offerType = "amount";
     offerValue = dval;
     finalPrice = rawPrice - dval;
@@ -215,31 +249,39 @@ function mapDeviceToStorefront(item: AdminAppleItem): StorefrontProduct {
     price: finalPrice,
     specs,
     images,
-    originalPrice: rawPrice,      // ✅ always keep original
-    offerType,                    // ✅ normalized
-    offerValue,                   // ✅ normalized number
-    colors: item.colors ?? [],
+    originalPrice: rawPrice,
+    offerType,
+    offerValue,
+
     categoryType: item.categoryType,
     deviceStatus: item.deviceStatus,
+
+    shortDescription: item.shortDescription || "",
+    longDescription: item.longDescription || "",
+
+    os: item.os || "",
+    ramGB: item.ramGB ?? null,
+    batteryMah: item.batteryMah ?? null,
+    display: item.display,
+    cameras: item.cameras,
+
+    warrantyType: item.warrantyType || "",
+    warrantyPeriod: item.warrantyPeriod || "",
+
+    inStock: item.inStock,
+    stockCount: item.stockCount ?? null,
+
+    colors: item.colors ?? [],
+    storageOptions: item.storageOptions ?? [],
   };
 }
-
 
 /** Apple-specific helper (still used by AppleProducts) */
 export function mapApplePhone(item: AdminAppleItem): StorefrontProduct {
   const base = mapDeviceToStorefront(item);
-  // Force label to "Apple" for storefront
   return { ...base, brand: item.brand || "Apple" };
 }
 
-/**
- * Fetch Apple phones (BrandNewMobilePhone collection)
- * Only:
- *  - brand: Apple
- *  - deviceStatus: not used
- *  - status: Active
- *  - inStock: true
- */
 export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     brand: "Apple",
@@ -263,7 +305,7 @@ export async function fetchApplePhones(): Promise<StorefrontProduct[]> {
 export async function fetchUsedApplePhones(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     brand: "Apple",
-    deviceStatus: "used",      // ⚠️ key difference
+    deviceStatus: "used",
     status: "Active",
     inStock: "true",
     limit: "100",
@@ -280,8 +322,6 @@ export async function fetchUsedApplePhones(): Promise<StorefrontProduct[]> {
   return items.map(mapApplePhone);
 }
 
-
-// All used items (phones, tablets, smart watches, earbuds)
 export async function fetchUsedItems(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     deviceStatus: "used",
@@ -298,11 +338,8 @@ export async function fetchUsedItems(): Promise<StorefrontProduct[]> {
 
   const data = await res.json();
   const items: AdminAppleItem[] = data?.items ?? [];
-  // Reuse the same mapper – it gracefully ignores missing fields
   return items.map(mapDeviceToStorefront);
 }
-
-
 
 export async function fetchBrands(): Promise<StorefrontBrand[]> {
   const url = `${API}/brands?status=Active&limit=50&sortBy=createdAt&sortOrder=asc`;
@@ -320,10 +357,7 @@ export async function fetchBrands(): Promise<StorefrontBrand[]> {
   }));
 }
 
-export async function fetchAndroidPhonesByBrand(
-  brandName: string
-): Promise<StorefrontProduct[]> {
-  // Reuse /public/phones by brand
+export async function fetchAndroidPhonesByBrand(brandName: string): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     brand: brandName,
     status: "Active",
@@ -358,7 +392,6 @@ export async function fetchSpeakerBrands(): Promise<StorefrontBrand[]> {
   }));
 }
 
-// All active speakers (BrandNewSpeaker via /public/speakers)
 export async function fetchSpeakers(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     status: "Active",
@@ -408,9 +441,7 @@ function mapCoolerToStorefront(item: AdminCoolerItem): StorefrontProduct {
   if (item.shortDescription) specs.push(item.shortDescription);
   if (item.longDescription) specs.push(item.longDescription);
   if (item.warrantyType || item.warrantyPeriod) {
-    specs.push(
-      [item.warrantyType, item.warrantyPeriod].filter(Boolean).join(" ")
-    );
+    specs.push([item.warrantyType, item.warrantyPeriod].filter(Boolean).join(" "));
   }
 
   return {
@@ -426,10 +457,14 @@ function mapCoolerToStorefront(item: AdminCoolerItem): StorefrontProduct {
     offerValue,
     colors: item.colors ?? [],
     categoryType: item.categoryType,
+    shortDescription: item.shortDescription || "",
+    longDescription: item.longDescription || "",
+    inStock: item.inStock,
+    warrantyType: item.warrantyType,
+    warrantyPeriod: item.warrantyPeriod,
   };
 }
 
-// All active coolers (BrandNewCooler)
 export async function fetchCoolers(): Promise<StorefrontProduct[]> {
   const params = new URLSearchParams({
     status: "Active",
@@ -440,11 +475,7 @@ export async function fetchCoolers(): Promise<StorefrontProduct[]> {
     page: "1",
   });
 
-  // IMPORTANT:
-  // This assumes your backend route is GET /coolers
-  // If your route is different, change "coolers" here.
   const url = `${API}/coolers?${params.toString()}`;
-
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`Coolers fetch failed: ${res.status}`);
 
@@ -453,9 +484,7 @@ export async function fetchCoolers(): Promise<StorefrontProduct[]> {
   return items.map(mapCoolerToStorefront);
 }
 
-
 export async function fetchAndroidPhones(): Promise<StorefrontProduct[]> {
-  // fetch all phones except Apple (Active + inStock)
   const params = new URLSearchParams({
     status: "Active",
     inStock: "true",
@@ -471,27 +500,22 @@ export async function fetchAndroidPhones(): Promise<StorefrontProduct[]> {
   const data = await res.json();
   const items: AdminAppleItem[] = data?.items ?? [];
 
-  // filter out Apple client-side (extra safety)
   const androidOnly = items.filter(
     (p) => String(p?.brand || "").toLowerCase().trim() !== "apple"
   );
 
   return androidOnly.map(mapDeviceToStorefront);
 }
+
 function normCat(v: any) {
   return String(v ?? "").trim().toLowerCase();
 }
 
-// Match item.categoryType against a list of allowed names (case-insensitive)
 function categoryIn(item: StorefrontProduct, allowed: string[]) {
   const c = normCat(item.categoryType);
   return allowed.some((x) => normCat(x) === c);
 }
 
-/**
- * Fetch ALL used items and filter by categoryType locally (case-insensitive).
- * This works even if backend doesn't support category filter.
- */
 export async function fetchUsedItemsByCategoryTypes(
   allowedCategoryTypes: string[]
 ): Promise<StorefrontProduct[]> {
@@ -499,10 +523,6 @@ export async function fetchUsedItemsByCategoryTypes(
   return (all || []).filter((p) => categoryIn(p, allowedCategoryTypes));
 }
 
-/**
- * Fetch ALL used items but keep only Apple brand (used Apple)
- * (helpful for iPhone/iPad/Mac/Watch/AirPods used pages)
- */
 export async function fetchUsedAppleItemsByCategoryTypes(
   allowedCategoryTypes: string[]
 ): Promise<StorefrontProduct[]> {
@@ -513,9 +533,6 @@ export async function fetchUsedAppleItemsByCategoryTypes(
   return appleOnly.filter((p) => categoryIn(p, allowedCategoryTypes));
 }
 
-/**
- * Fetch ALL used items but keep only NON-Apple brand (used Android side)
- */
 export async function fetchUsedAndroidItemsByCategoryTypes(
   allowedCategoryTypes: string[]
 ): Promise<StorefrontProduct[]> {
@@ -525,8 +542,6 @@ export async function fetchUsedAndroidItemsByCategoryTypes(
   );
   return androidOnly.filter((p) => categoryIn(p, allowedCategoryTypes));
 }
-
-
 
 type AdminAccessoryItem = {
   _id: string;
@@ -594,6 +609,9 @@ function mapAccessoryToStorefront(item: AdminAccessoryItem): StorefrontProduct {
     offerValue,
     colors: item.colors ?? [],
     categoryType: item.categoryType,
+    shortDescription: item.shortDescription || "",
+    longDescription: item.longDescription || "",
+    inStock: item.inStock,
   };
 }
 
@@ -609,11 +627,23 @@ export async function fetchAccessories(): Promise<StorefrontProduct[]> {
   const url = `${API}/accessories?${params.toString()}`;
   const res = await fetch(url, { cache: "no-store" });
 
-  if (!res.ok) {
-    throw new Error(`Accessories fetch failed: ${res.status}`);
-  }
+  if (!res.ok) throw new Error(`Accessories fetch failed: ${res.status}`);
 
   const data = await res.json();
   const items: AdminAccessoryItem[] = data?.items ?? [];
   return items.map(mapAccessoryToStorefront);
+}
+
+// ✅ Product by id (public) — return full details (NOT apple-only mapping)
+export async function fetchPublicPhoneById(id: string): Promise<StorefrontProduct | null> {
+  if (!id) return null;
+
+  const url = `${API}/phones/${encodeURIComponent(id)}`;
+  const res = await fetch(url, { cache: "no-store" });
+
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`Product fetch failed: ${res.status}`);
+
+  const item = await res.json();
+  return mapDeviceToStorefront(item as any);
 }
